@@ -257,7 +257,8 @@ get_parameters <- function (projectPath,
                           "Not running tzar or tzar emulator but ",
                           "parameters variable still exists.\n\n"))
 
-            } else  parameters = local_build_parameters_list ()
+              #### Remove this local_...() call and leave it to the mainline.
+            } #### else  parameters = local_build_parameters_list ()
         }
 
     return (parameters)
