@@ -20,7 +20,6 @@ model_with_possible_tzar_emulation <- function (main_function,
     parameters = get_parameters (projectPath,
                                  tzarJarPath,
                                  tzarEmulation_scratchFileName,
-                                 running_tzar_or_tzar_emulator,
                                  emulatingTzar
                                  )
 

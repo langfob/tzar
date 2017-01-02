@@ -6,17 +6,6 @@
 
 #===============================================================================
 
-local_build_parameters_list <- function ()
-    {
-    parameters = list()
-    parameters$x = 15
-    parameters$y = "twenty"
-
-    return (parameters)
-    }
-
-#===============================================================================
-
     # *****  2017 01 02 - BTL
     #  This function is only here to hold the code until I figure out where
     #  it needs to go in the bdpg code.
@@ -55,19 +44,24 @@ open_console_output_file_if_necessary <- function (emulatingTzar,
 
 #===============================================================================
 
-genSetCoverProblem (parameters,
-                    ...
-#                    running_tzar_or_tzar_emulator=FALSE,
-#                    emulatingTzar=FALSE
-                    )
+trial_main_function <- function (parameters=NULL,
+                                 running_tzar_or_tzar_emulator=FALSE,
+                                 emulatingTzar=FALSE
+                                 )
     {
-    cat ("\n\nDummy call to gen set cover().\n\n")
+    cat ("\n\nDummy call to trial_main_function().\n\n")
 
     cat ("\nrunning_tzar_or_tzar_emulator = ", running_tzar_or_tzar_emulator)
     cat ("\nemulatingTzar                 = ", emulatingTzar)
+    cat ("\n\n")
 
     # open_console_output_file_if_necessary (emulatingTzar,
     #                                        echoConsoleToTempFile)
+
+    if (is.null (parameters))
+        parameters = list (x=15)
+
+    return (parameters$x)
     }
 
 #===============================================================================

@@ -220,7 +220,6 @@ cleanUpAfterTzarEmulation = function (parameters)
 get_parameters <- function (projectPath,
                             tzarJarPath,
                             tzarEmulation_scratchFileName,
-                            running_tzar_or_tzar_emulator=FALSE,
                             emulatingTzar=FALSE
                             )
     {
@@ -240,25 +239,6 @@ get_parameters <- function (projectPath,
                                          tzarJarPath,
                                          tzarEmulation_scratchFileName
                                          )
-        }
-
-    #---------------------------------------------------------------------------
-
-        #  If not running tzar (in emulation or otherwise), then you need to
-        #  provide your own parameters list in the local_build_parameters_list()
-        #  function.
-
-    if (! running_tzar_or_tzar_emulator)
-        {
-        if (exists ("parameters"))
-            {
-#            system.quit (paste0 ("\n\nSomething is wrong.  ",
-            quit (paste0 ("\n\nSomething is wrong.  ",
-                          "Not running tzar or tzar emulator but ",
-                          "parameters variable still exists.\n\n"))
-
-              #### Remove this local_...() call and leave it to the mainline.
-            } #### else  parameters = local_build_parameters_list ()
         }
 
     return (parameters)
