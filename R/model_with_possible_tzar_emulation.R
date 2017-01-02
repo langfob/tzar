@@ -42,6 +42,16 @@ model_with_possible_tzar_emulation <- function (main_function,
                    running_tzar_or_tzar_emulator=running_tzar_or_tzar_emulator,
                    emulatingTzar=emulatingTzar
                    )
+
+    ######
+        #  COULD YOU PUT THE TZAR CLEANUP IN HERE TOO IF YOU MOVE THE
+        #  main_function() CALL INTO THE ELSE ABOVE AND DUPLICATE THAT
+        #  MAIN CALL IN THE IF BRANCH AS WELL?
+        #  If so, that would completely separate the tzar emulation out
+        #  of the user's code.
+    ######
+
+
     }
 
 #===============================================================================
