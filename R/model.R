@@ -8,31 +8,34 @@
 
 #===============================================================================
 
-cat ("\n\nCurrent working directory = '", getwd(), "'\n\n")
-
-if (!exists ("sourceCodeLocationWithSlash"))
-    sourceCodeLocationWithSlash = 
-#        "/Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/"
-        "./"
-        
-source (paste0 (sourceCodeLocationWithSlash, "emulatingTzarFlag.R"))
-
-#tzarEmulation_scratchFileName = "~/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/tzarEmulation_scratchFile.txt"
-tzarEmulation_scratchFileName = "~/D/Projects/ProblemDifficulty/src/bdprobdiff/R/tzarEmulation_scratchFile.txt"
-
-if (! emulatingTzar)  
+model_with_possible_tzar_emulation <- function (main_function,
+                                                emulatingTzar=TRUE)
     {
-cat ("\n\n=====>  In model.R: NOT emulatingTzar")
+    cat ("\n\nCurrent working directory = '", getwd(), "'\n\n")
 
-    source (paste0 (sourceCodeLocationWithSlash, "generateSetCoverProblem.R"))    #  not emulating, running regular tzar
-    
-    } else    #  emulating
-    {
-    parameters$tzarEmulation_scratchFileName = tzarEmulation_scratchFileName
+    if (! emulatingTzar)
+        {
+        cat ("\n\n=====>  In model.R: NOT emulatingTzar")
 
-    cat (parameters$fullOutputDirWithSlash, "\n",
-       file = tzarEmulation_scratchFileName, sep='' )
+        } else    #  emulating
+        {
+        tzarEmulation_scratchFileName = file.path (tempfile, "tzarEmulation_scratchFile.txt")
+
+        parameters$tzarEmulation_scratchFileName = tzarEmulation_scratchFileName
+
+        cat (parameters$fullOutputDirWithSlash, "\n",
+             file = tzarEmulation_scratchFileName, sep='' )
+        }
+
+    main_function (parameters)
     }
+
+#===============================================================================
+
+emulatingTzar = TRUE
+main_function = generateSetCoverProblem
+
+model_with_possible_tzar_emulation (main_function, emulatingTzar=TRUE)
 
 #===============================================================================
 
