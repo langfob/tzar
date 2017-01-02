@@ -1,10 +1,10 @@
 #===============================================================================
 
-                            #-----------------------------------#
-                            #               model.R             #
-                            #                 for               #
-                            #  example-tzar-emulator-R project  #
-                            #-----------------------------------#
+                    #--------------------------------------#
+                    # model_with_possible_tzar_emulation.R #
+                    #                 for                  #
+                    #    example-tzar-emulator-R project   #
+                    #--------------------------------------#
 
 #===============================================================================
 
@@ -19,8 +19,10 @@ model_with_possible_tzar_emulation <- function (main_function,
 
         } else    #  emulating
         {
-        tzarEmulation_scratchFileName = file.path (tempfile, "tzarEmulation_scratchFile.txt")
+        tzarEmulation_scratchFileName =
+            file.path (tempdir(), "tzarEmulation_scratchFile.txt")
 
+        parameters = list()
         parameters$tzarEmulation_scratchFileName = tzarEmulation_scratchFileName
 
         cat (parameters$fullOutputDirWithSlash, "\n",
@@ -29,13 +31,6 @@ model_with_possible_tzar_emulation <- function (main_function,
 
     main_function (parameters)
     }
-
-#===============================================================================
-
-emulatingTzar = TRUE
-main_function = generateSetCoverProblem
-
-model_with_possible_tzar_emulation (main_function, emulatingTzar=TRUE)
 
 #===============================================================================
 
