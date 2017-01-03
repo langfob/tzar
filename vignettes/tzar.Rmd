@@ -1,6 +1,6 @@
 ---
-title: "Vignette Title"
-author: "Vignette Author"
+title: "How to use the tzar package"
+author: "Bill Langford"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -8,6 +8,124 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+The java program tzar helps with managing many runs of sets of experiments and making them easier to reproduce.  One problem with tzar is that it runs your R code in a separate process that makes it difficult, if not impossible, to easily debug your R code.  
+
+The tzar package is intended to make it easy to emulate running tzar while keeping the running code under your control to allow more interaction with your code, e.g., allowing the use of the browser() function to pause and examine variables.  Similarly, when your program crashes in emulation mode you can get at lots of information that is lost when the program is run in a separate tzar process.  
+
+Here, we will give a detailed, incremental buildup of a small example program to illustrate how to use the tzar emulator and how it works.  We will consider a trivial program to print the value of a variable x.  We will walk through a common sequence of steps in the evolution of a program and show how to this might happen in the context of tzar and the tzar emulator.
+
+## Simple program
+
+Suppose that we want to build a program that will just print the value of an input parameter x.  Call the program print_x().  
+
+```{r}
+print_x <- function (x)
+    {
+    cat ("\nValue of x = '", x, "'\n\n", sep='')
+    }
+```
+
+#### Print a value from a parameters list.
+```{r}
+parameters <- list (x="a value from a list of parameters")
+print_x (parameters$x)
+```
+
+##  Program using tzar and tzar emulation
+
+#### Conventions used by tzar that matter in emulation
+
+- tzar builds a *parameters* list by reading a project.yaml file from the directory where the program source code is stored.  
+    - This *parameters* list is then written out to a file parameters.R which can be read back in as a list object by any R program.
+- tzar requires you to have a model.R file (in the same directory) that invokes the code you want to run.
+    - The code in model.R is run *after* tzar has loaded the project.yaml data into the *parameters* list.
+    - This means that model.R can treat the variable *parameters* as a pre-existing variable inside the same scope as the code in model.R.
+    - The code in model.R has no restrictions on what it can or has to do.  It could be completely empty for all that tzar cares.  
+        - Consequently, we can run a model.R that does almost nothing at all but it will still have read and written the *parameters* list.
+- One useful thing about tzar is that it builds various directory locations and variables for you, but the names that are built aren't known to you until after tzar has started up.  
+    - However, the values of these constructed names and variables are added to the *parameters* list.
+    - After tzar builds the directory path to its output, it saves it in the *parameters* list as parameters$fullOutputDirWithSlash.  
+        - This is the location where the *parameters* list itself will be written as a parameters.R file.
+    
+#### How the conventions suggest a method for tzar emulation
+
+All we need to do to get access to the *parameters* list is to have model.R capture the path to where tzar did its work and in particular, where it wrote the *parameters* list to a parameters.R file.  To capture that value, we can just have model.R look up the location from the *parameters* list and write it to an agreed-upon scratch file location.  
+
+```{r eval=FALSE}
+scratch_file         <- normalizePath ("~/scratch.txt")
+tzar_output_location <- parameters$fullOutputDirWithSlash
+
+    #  Write the directory path for tzar's parameters.R file 
+    #  into the scratch file that our main program can read later.
+cat (parameters$fullOutputDirWithSlash, file = scratch_file, sep='\n' )
+```
+
+We can then read that file after tzar has decoded the *parameters* list and run the model.R code that does nothing but write the path to the scratch file.  Afterwards, in a preamble to our own real code, we just read the *parameters* list from the location specified in the scratch file and hand the reconstituted  *parameters* to our real code.  This parameters list will contain all of the paths and variable names that tzar has built based on the project.yaml file so that we don't have to build them ourselves.
+    
+####  Allowing both normal tzar and tzar emulation
+
+The one other thing that we would like is for our code to still work without change when running under tzar rather than emulating tzar.  This is also easy to accomplish by just adding a boolean flag in model.R  indicating whether we are running tzar normally or just emulating it.  Each time you want to switch from emulation to normal tzar and vice versa, you just have to change the value of this flag in model.R.  
+
+It would be nice if this could be handled without editing model.R, but it's probably the simplest way to make the change right now.  The flag's value will also probably only be changed very rarely, i.e., when you first start the project emulation will be on and then when things are working well enough to do final experiments, you switch emulation off.
+
+##  Summary
+
+For each project that uses tzar emulation, you will need to do the following once  at the start of the project.  You may also need to change the emulatingTzar flag at some time during the project when you switch from emulation to running tzar normally.
+
+1. Copy the model.R file given here into your R source code area and in it, set:
+
+    - main_function
+    - projectPath
+    - tzarJarPath
+    - running_tzar_or_tzar_emulator
+    - emulatingTzar
+2. Create a mainline wrapper function for your code that has the following 3 arguments, regardless of whether they're used or not:
+
+    - parameters
+    - running_tzar_or_tzar_emulator
+    - emulatingTzar
+3. Make sure that build_scratch_file_name() is writing the emulation scratch file where you want it.
+4. Make sure that the tzar package is loaded for your code.
+5. Make your topmost level of code call the function:
+
+```{r eval=FALSE}
+run_mainline_under_tzar_or_tzar_emulation (parameters,
+                                               main_function,
+                                                projectPath,
+                                                tzarJarPath,
+                                                running_tzar_or_tzar_emulator,
+                                                emulatingTzar
+                                               )
+```
+
+
+##  Some useful tzar-related commands for reference
+
+```
+java   -jar   tzar.jar   scheduleruns   http://rdv-framework.googlecode.com/svn/trunk/projects/rdvPackages/biodivprobgen/R    --clustername   biodivprobgen   --revision   head   --runset   biodivprobgen_1kruns_1sce_8001ranSeed_10to60ranPUs
+```
+
+```
+java -jar tzar.jar execlocalruns /Users/bill/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/ --runset biodivprobgen_1kruns_1sce_8001ranSeed_10to60ranPUs
+```
+
+```
+java -jar tzar.jar execlocalruns https://tzar-framework.googlecode.com/svn/tags/latest/example-projects/example-R
+```
+
+```
+https://tzar-framework.googlecode.com/svn/trunk/
+```
+```
+sudo  scp  -i  /Users/bill/.ssh/rdv.pem  /Users/bill/D/rdv-framework/tzar-0.5.5-runset-wildcard.mar.07.2015.jar  ubuntu@146.118.96.116:/home/ubuntu
+```
+```
+ [ubuntu@unixnpeap06 tzar_output]$ grep -i bdpg ?????_scen_rand_10_to_60_PUs_0_5_optFrac_random_r_and_p/prob_diff_results.csv > ../aggregated1kResults.csv
+-bash: ../aggregated1kResults.csv: Read-only file system
+```
+
+===
 
 Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
 
