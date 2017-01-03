@@ -41,6 +41,20 @@
 
 #===============================================================================
 
+run_tzar <- function (tzarJarPath, projectPath)
+    {
+    tzarCmd = paste ("-jar", tzarJarPath, "execlocalruns", projectPath)
+    current.os = utils::sessionInfo()$R.version$os
+
+    if (current.os == 'mingw32')
+        {
+        tzarsim.exit.code = system (paste0 ('java ', tzarCmd))
+        } else
+        {
+        tzarsim.exit.code = system2 ('java', tzarCmd, env="DISPLAY=:1")
+        }
+    }
+
 #===============================================================================
 
 emulateRunningTzar = function (projectPath,
@@ -96,16 +110,7 @@ emulateRunningTzar = function (projectPath,
         #     output directory.
         #-----------------------------------------------------------------------
 
-    tzarCmd = paste ("-jar", tzarJarPath, "execlocalruns", projectPath)
-    current.os = utils::sessionInfo()$R.version$os
-
-    if (current.os == 'mingw32')
-        {
-        tzarsim.exit.code = system (paste0 ('java ', tzarCmd))
-        } else
-        {
-        tzarsim.exit.code = system2 ('java', tzarCmd, env="DISPLAY=:1")
-        }
+    run_tzar (tzarJarPath, projectPath)
 
         #----------------------------------------------------------
         #  tzar has wildcard-substituted the inProgress name throughout
@@ -242,6 +247,40 @@ get_parameters <- function (projectPath,
         }
 
     return (parameters)
+    }
+
+#===============================================================================
+
+run_mainline_under_tzar_or_tzar_emulation <- function (parameters,
+                                               main_function,
+                                                projectPath,
+                                                tzarJarPath,
+                                                running_tzar_or_tzar_emulator=TRUE,
+                                                emulatingTzar=TRUE
+                                               )
+    {
+    if (emulatingTzar)
+        {
+        cat ("\n\nIn run_mainline_under_tzar_or_tzar_emulation:  emulating running under tzar...")
+
+        parameters = emulateRunningTzar (projectPath,
+                                         tzarJarPath,
+                                         tzarEmulation_scratchFileName
+                                         )
+
+        main_function (parameters = parameters,
+                       running_tzar_or_tzar_emulator = running_tzar_or_tzar_emulator,
+                       emulatingTzar=emulatingTzar
+                       )
+
+        cleanUpAfterTzarEmulation (parameters)
+
+        } else
+        {
+        cat ("\n\nIn run_mainline_under_tzar_or_tzar_emulation:  emulating running under tzar...")
+
+        run_tzar (tzarJarPath, projectPath)
+        }
     }
 
 #===============================================================================
