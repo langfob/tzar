@@ -19,7 +19,7 @@ Examples of how to use tzar emulation are given in the README file.  This vignet
 
 ##  How tzar emulation works
 
-Basically, tzar emulation is just a way to trick tzar into giving you half of its benefits.  The various things that you have to do as a user to use the package are largely a consequence of how what is required to trick tzar.  This section gives some background that helps understand what's necessary to trick tzar.
+Basically, tzar emulation is just a way to trick tzar into giving you half of its benefits.  The various things that you have to do as a user to use the package are largely a consequence of what is required to trick tzar.  This section gives some background that helps understand what's necessary to trick tzar.
 
 #### Conventions used by tzar that matter in emulation
 
@@ -94,25 +94,6 @@ else
 ## Dumping ground for misc notes that will probably end up removed from this vignette
 
 ##  NOTES
-
-### Trying to run the following call, I have various problems:
-
-```{r eval=FALSE}
-run_mainline_under_tzar_or_tzar_emulation (
-         main_function=trial_main_function,
-         projectPath=".",
-         tzarJarPath = "~/D/rdv-framework-latest-work/tzar.jar",
-         emulation_scratch_file_path="~/tzar_emulation_scratch.yaml",
-         emulatingTzar=TRUE
-         )
-```
-
-- Can't get the code to work inside the testthat code when running CHECK.  
-    - I have no idea what's wrong there.
-- IMPORTANT:  Running the code *outside* of CHECK only works if you first:
-    - cd into the tzar/tests/testthat directory and 
-    - source ("model_support_code.R")
-
 
 
 ###  Some possibly useful tzar-related commands I had lying around in various editor buffers
