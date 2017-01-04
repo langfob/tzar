@@ -9,15 +9,17 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-The java program tzar helps with managing many runs of sets of experiments and making them easier to reproduce.  One problem with tzar is that it runs your R code in a separate process that makes it difficult, if not impossible, to easily debug your R code.  
+##  Overview
 
-The tzar package is intended to make it easy to emulate running tzar while keeping the running code under your control to allow more interaction with your code, e.g., allowing the use of the browser() function to pause and examine variables.  Similarly, when your program crashes in emulation mode you can get at lots of information that is lost when the program is run in a separate tzar process.  
+The java program tzar helps with managing many runs of sets of experiments and making them easier to reproduce.  However, one problem with tzar is that it runs your R code in a separate process that makes it difficult, if not impossible, to easily debug your R code.  
 
-Here, we will give a detailed, incremental buildup of a small example program to illustrate how to use the tzar emulator and how it works.  We will consider a trivial program to print the value of a variable x.  We will walk through a common sequence of steps in the evolution of a program and show how to this might happen in the context of tzar and the tzar emulator.
+The tzar package is intended to make it easy to emulate running tzar while keeping the running code under your control (e.g., inside RStudio).  This allows more interaction with your code, e.g., allowing the use of the browser() function to pause and examine variables.  Similarly, when your program crashes in emulation mode you can get at lots of information that is lost or truncated when the program is run in a separate tzar process.  
 
-## Simple program
+## Simple example _[move to README?]_
 
-Suppose that we want to build a program that will just print the value of an input parameter x.  Call the program print_x().  
+Here, we will give a simple example program to illustrate how to use the tzar emulator and how it works.  We will consider a trivial program to print the value of a variable x.  Not all of the example will make perfect sense until you have read the rest of this vignette, but it will give you a concrete idea of how you use tzar emulation and that should help make the later details easier to understand.
+
+Suppose that we want to build a program that will just print the value of an input parameter x.  Call the program print_x() and suppose that it is in a file called print_x.R.  
 
 ```{r}
 print_x <- function (x)
@@ -26,46 +28,124 @@ print_x <- function (x)
     }
 ```
 
-#### Print a value from a parameters list.
+### Print a value from a parameters list.
 ```{r}
+print_x <- function (parameters)
+    {
+    cat ("\nValue of x = '", parameters$x, "'\n\n", sep='')
+    }
+
 parameters <- list (x="a value from a list of parameters")
-print_x (parameters$x)
+print_x (parameters)
 ```
 
-##  Program using tzar and tzar emulation
+### Print a value from a parameters list specified in a project.yaml file
+
+Suppose that the project.yaml file contains:
+
+```{yaml eval=FALSE}
+project_name: simple_program
+runner_class: RRunner
+
+base_params:
+    x: 100
+```
+
+#### To run under tzar emulation
+
+We have to do 2 things:  
+
+- First, we would have to edit the **model.R** file to set the argument variables correctly.  Assuming that:  
+
+    - the tzar jar file was in the directory "~/tzar"   
+    - we want the tzar emulation scratch file in our home directory  
+        - tzar emulation requires the use of a tiny scratch file that you don't need to know anything about, other than specifying where to put it.  
+        - The file is deleted at the end of the run, so its location is not terribly important.  
+    - the R code is in the current working directory  
+    
+```{R eval=FALSE}
+library (tzar)
+source ("print_x.R")
+
+main_function                 = print_x
+projectPath                   =  "."
+tzarEmulation_scratchFileName = "~/tzar_em_scratch.yaml"
+
+model_with_possible_tzar_emulation (parameters,
+                                    main_function,
+                                    projectPath,
+                                    tzarEmulation_scratchFileName
+                                    )
+
+```
+
+- Second, we would make a **function call** something like this one at the R prompt to run the program under tzar emulation:
+
+```{R eval=FALSE}
+run_mainline_under_tzar_or_tzar_emulation (
+    main_function               = print_x,    #  note, no quotes on name
+    projectPath                 = ".",
+    tzarJarPath                 = "~/tzar/tzar.jar", 
+    emulation_scratch_file_path = "~/tzar_em_scratch.yaml",
+    emulatingTzar               = TRUE
+    )
+
+```
+
+#### To run under normal tzar without emulation
+
+We would leave model.R as above and then just change the final argument to  run_mainline_under_tzar_or_tzar_emulation(), i.e., change emulatingTzar to FALSE:
+
+```{R eval=FALSE}
+run_mainline_under_tzar_or_tzar_emulation (
+    main_function               = print_x,    #  note, no quotes on name
+    projectPath                 = ".",
+    tzarJarPath                 = "~/tzar/tzar.jar", 
+    emulation_scratch_file_path = "~/tzar_em_scratch.yaml",
+    emulatingTzar               = FALSE
+    )
+
+```
+
+##  How tzar emulation works
+
+Basically, tzar emulation is just a way to trick tzar into giving you half of its benefits.  The various things that you have to do as a user to use the package are largely a consequence of how what is required to trick tzar.  This section gives some background that helps understand what's necessary to trick tzar.
 
 #### Conventions used by tzar that matter in emulation
 
-- tzar builds a *parameters* list by reading a project.yaml file from the directory where the program source code is stored.  
-    - This *parameters* list is then written out to a file parameters.R which can be read back in as a list object by any R program.
-- tzar requires you to have a model.R file (in the same directory) that invokes the code you want to run.
-    - The code in model.R is run *after* tzar has loaded the project.yaml data into the *parameters* list.
+- **project.yaml**:  tzar requires a project.yaml file to exist in the directory where the source code is stored.
+    - tzar builds a *parameters* list by decoding the yaml expressions in the project.yaml file.  
+    - This *parameters* list is then written out to a file "parameters.R" which can be read back in as a list object by any R program.
+    - One useful thing about tzar is that it builds various directory locations and variables for you by replacing wildcard values, but the names that are built aren't known to you until after tzar has started up.  
+        - However, the values of these constructed names and variables are added to the *parameters* list before it is written out to "parameters.R".
+        - After tzar builds the directory path to its output, it saves it in the *parameters* list as parameters$fullOutputDirWithSlash.  
+            - This is the location where the *parameters* list itself will be written as a parameters.R file.
+- **model.R**:  tzar requires you to have a model.R file (in the same directory) that invokes the code you want to run.
+    - The code in **model.R** is run *after* tzar has loaded the project.yaml data into the *parameters* list.
     - This means that model.R can treat the variable *parameters* as a pre-existing variable inside the same scope as the code in model.R.
     - The code in model.R has no restrictions on what it can or has to do.  It could be completely empty for all that tzar cares.  
         - Consequently, we can run a model.R that does almost nothing at all but it will still have read and written the *parameters* list.
-- One useful thing about tzar is that it builds various directory locations and variables for you, but the names that are built aren't known to you until after tzar has started up.  
-    - However, the values of these constructed names and variables are added to the *parameters* list.
-    - After tzar builds the directory path to its output, it saves it in the *parameters* list as parameters$fullOutputDirWithSlash.  
-        - This is the location where the *parameters* list itself will be written as a parameters.R file.
     
 #### How the conventions suggest a method for tzar emulation
 
-Tzar creates the parameters list and saves it to disk *regardless of what is done in model.R*.  So, in emulation mode we can take advantage of this by having model.R do nothing at all, except save the path to the directory where the parameters list was written.  We can easily do this by just having model.R write that path into a scratch file whenever it's doing emulation. The emulation code can then read the location from the scratch file and find the parameters.R file to load the parameters list and pass the reconstituted  *parameters* to our mainline application code.  This parameters list will contain all of the paths and variable names that tzar has built based on the project.yaml file so that we don't have to build them ourselves.
+Tzar creates the parameters list and saves it to disk *regardless of what is done in model.R*.  So, in emulation mode we can take advantage of this by having model.R do nothing at all, except save the path to the directory where the parameters list was written.  
+
+We can easily do this by just having model.R write that path into a scratch file whenever it's doing emulation. The emulation code can then read the location from the scratch file and find the "parameters.R" file to load the parameters list and pass the reconstituted  *parameters* to our mainline application code.  This parameters list will contain all of the paths and variable names that tzar has built based on the project.yaml file so that we don't have to build them ourselves.
     
 ####  Allowing both normal tzar and tzar emulation
 
-The one other thing that we would like is for our code to still work with as little change as possible when running under tzar rather than emulating tzar.  This is easy to accomplish by just adding a boolean flag indicating whether we are running tzar normally or just emulating it.  Each time you want to switch from emulation to normal tzar and vice versa, you just have to change the value of this flag.  
+The one other thing that we would like is for our code to still work with as little change as possible when running normally under tzar rather than emulating tzar.  This is easy to accomplish by just adding a boolean flag indicating whether we are running tzar normally or just emulating it.  Each time you want to switch from emulation to normal tzar and vice versa, you just have to change the value of this flag.  
 
-The only hitch is that the flag has to be known to both model.R and the emulation code.  At the moment, the simplest way to make sure that the value is the same in both bits of code is to read it from a file that both bits of code know about. This is a little bit clumsy, but the flag's value will probably only be changed very rarely, i.e., when you first start the project, emulation will be on and then when things are working well enough to do final experiments, you switch emulation off by editing this file.
+The only hitch is that the flag has to be known to both model.R and the emulation code.  At the moment, the simplest way to make sure that the value is the same in both bits of code is to read it from a file that both bits of code know about. This is a little bit clumsy, but it works.
 
-##  Summary
+##  Implementation summary
 
-So, to summarize, our implementation of tzar emulation requires two pieces of code:  
+Implementation of tzar emulation requires two pieces of code:  
 
-* one piece that runs inside model.R whenever tzar is invoked and 
-* another piece that wraps around our mainline application code to: 
-    + run tzar and 
-    + get the *parameters* list back from it if running in emulation mode
+* One piece that runs inside model.R whenever tzar is invoked, and 
+* Another piece that wraps around our mainline application code to: 
+    + run tzar, and 
+    + get the *parameters* list back from it if running in emulation mode, and
     + run the mainline application.  
     
 In pseudocode, this looks like the following:
@@ -96,41 +176,48 @@ else
     run mainline application
 ```
 
-##  User steps required to enable tzar emulation
+##  User steps required to enable tzar emulation _[move to README?]_
 
-For each project that uses tzar emulation, you will need to do the following once  at the start of the project.  You may also need to change the *emulatingTzar* flag at some time during the project when you switch from emulation to running tzar normally.
+For each project that uses tzar emulation, you will need to do the steps below,  once at the start of the project. There are a fair number of these steps but they are all pretty simple.  The reason for all this is that the whole process is a complete hack aimed at deceiving tzar into doing what we want.  There has been talk of adding a "dry run" option to tzar to properly do what this hack does, but so far, it's just talk.  In the meantime, this hack works.
 
-1. Copy the model.R file given here into your R source code area and in it, set the following values of the function called in model.R:
-
-    - main_function
-    - projectPath
-    - tzarJarPath
-
-2. Make sure that your mainline application function has the following 3 arguments, regardless of whether they're used or not:
-
-    - parameters
-    - running_tzar_or_tzar_emulator
-    - emulatingTzar
-3. Make sure that build_scratch_file_name() is writing the emulation scratch file where you want it.
-4. Make sure that the tzarEmulation flag file exists in the appropriate directory and contains either TRUE or FALSE and nothing else.
-5. Make sure that the tzar package is loaded for your code.
-6. When running emulation rather than normal tzar, make sure that the project.yaml file is only doing a single run rather than using tzar's ability to generate lots of runs.
-7. Call the following function to run your mainline application code under tzar or tzar emulation:
+- **Copy the model.R file** from the package into your R source code area and in it, **set the following values** of the function called **in model.R**:
+    - variables to set
+        - main_function
+        - projectPath
+        - tzarJarPath
+        - emulation_scratch_file_path
+    - You may be able to add other code to the model.R file, but there are no guarantees that it will still run correctly if you do.  You can examine the code in the function called there (model_with_possible_tzar_emulation()) to see whether other additions to model.R will be a problem.  Generally though, model.R only exists to call your own code and won't need anything other than what is given in the template version.
+- Make sure that your **mainline application function has just one argument, a _parameters_ argument**, regardless of whether it's used or not in your code or not.
+- Make sure that the **tzar package is loaded** for your code, e.g., "library(tzar)".
+- Make sure that you have a **project.yaml file in the projectPath directory**.   
+    - This is a tzar requirement and not specific to tzar emulation.
+- **When running emulation** rather than normal tzar, make sure that the **project.yaml file is only doing a single run** rather than using tzar's ability to generate lots of runs (e.g., with a repetitions section).  
+    - If you were to generate multiple runs, there would be ambiguity because there would be more than one place to look for the parameters.R file that tzar generates.
+- **Call the following function** at the R prompt or on RStudio's command line to invoke the whole process, i.e., to run your mainline application code under tzar or tzar emulation:
 
 ```{r eval=FALSE}
-run_mainline_under_tzar_or_tzar_emulation (parameters,
-                                               main_function,
-                                                projectPath,
-                                                tzarJarPath,                                                running_tzar_or_tzar_emulator
-                                               )
+run_mainline_under_tzar_or_tzar_emulation (main_function,
+                                           projectPath,
+                                           tzarJarPath, 
+                                           emulation_scratch_file_path,
+                                           emulatingTzar
+                                           )
 ```
+
+
+---
+---
+
+
+# Extraneous material that will probably end up removed from this vignette
 
 ##  NOTES
 
 - Trying to run the following call, I have various problems:
 
 ```{r eval=FALSE}
-run_mainline_under_tzar_or_tzar_emulation (main_function=trial_main_function,
+run_mainline_under_tzar_or_tzar_emulation (
+         main_function=trial_main_function,
          projectPath=".",
          tzarJarPath = "~/D/rdv-framework-latest-work/tzar.jar",
          emulation_scratch_file_path="~/tzar_emulation_scratch.yaml",
@@ -140,7 +227,7 @@ run_mainline_under_tzar_or_tzar_emulation (main_function=trial_main_function,
 
 - Can't get the code to work inside the testthat code when running CHECK.  
     - I have no idea what's wrong there.
-- IMPORTANT:  Running the code *outside* of CHECK also fails if you don't first:
+- IMPORTANT:  Running the code *outside* of CHECK only works if you first:
     - cd into the tzar/tests/testthat directory and 
     - source ("model_support_code.R")
 
