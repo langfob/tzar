@@ -121,7 +121,7 @@ For each project that uses tzar emulation, you will need to do the steps below, 
         -   tzarJarPath
         -   emulation\_scratch\_file\_path
     -   You may be able to add other code to the model.R file, but there are no guarantees that it will still run correctly if you do. You can examine the code in the function called there (model\_with\_possible\_tzar\_emulation()) to see whether other additions to model.R will be a problem. Generally though, model.R only exists to call your own code and won't need anything other than what is given in the template version.
--   Make sure that your **mainline application function has just one argument, a *parameters* argument**, regardless of whether it's used or not in your code or not.
+-   Make sure that your **mainline application function has just one argument, a *parameters* argument**, regardless of whether it's used in your code or not.
 -   Make sure that the **tzar package is loaded** for your code, e.g., "library(tzar)".
 -   Make sure that you have a **project.yaml file in the projectPath directory**.
     -   This is a tzar requirement and not specific to tzar emulation.
