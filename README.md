@@ -2,9 +2,9 @@
 tzar
 ====
 
-This package encapsulates R-related code for using the tzar code-running tool to manage doing lots of experiments. At the moment, this is primarily the R code required for emulating running tzar so that you get the tzar setup, file naming, and parameter file building without fully running tzar.
+This package encapsulates R-related code for using the tzar code-running tool to manage doing lots of experiments. tzar itself is documented and downloadable from <https://tzar-framework.atlassian.net/wiki/display/TD/Tzar+documentation>.
 
-This allows you to run your code inside of R or RStudio in a way that allows you to do debugging, which is difficult or impossible to do when tzar has control of the entire process, e.g., on a remote machine.
+At the moment, the code here in the tzar package is primarily the R code required for emulating running tzar so that you get the tzar setup, file naming, and parameter file building without fully running tzar. This allows you to run your code inside of R or RStudio in a way that allows you to do debugging, which is difficult or impossible to do when tzar has control of the entire process, e.g., on a remote machine.
 
 Installation
 ------------
