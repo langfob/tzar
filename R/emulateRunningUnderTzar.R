@@ -279,8 +279,6 @@ cleanUpAfterTzarEmulation = function (parameters)
 
     file.rename (parameters$tzarInProgressDirName,
                  parameters$tzarEmulationCompletedDirName)
-
-    file.remove (parameters$tzarEmulation_scratchFileName)
     }
 
 #===============================================================================
@@ -345,7 +343,13 @@ run_mainline_under_tzar_or_tzar_emulation <-
                   emulatingTzar=TRUE
                   )
     {
-    emulation_scratch_file_path = normalizePath (emulation_scratch_file_path)
+        #  Make sure the path to the scratch file is in canonical form for
+        #  the platform in case there is any problem with it.
+        #  Set mustWork=FALSE because the file should not be there and
+        #  when a file is not there, normalizePath() gives a warning that
+        #  we don't want to see.
+    emulation_scratch_file_path = normalizePath (emulation_scratch_file_path,
+                                                 mustWork=FALSE)
     set_emulatingTzar_in_scratch_file (emulatingTzar,
                                        emulation_scratch_file_path)
 
@@ -368,6 +372,8 @@ run_mainline_under_tzar_or_tzar_emulation <-
         {
         cat ("\n\nIn run_mainline_under_tzar_or_tzar_emulation:  running tzar WITHOUT emulation...")
         }
+
+    file.remove (emulation_scratch_file_path)    # parameters$tzarEmulation_scratchFileName)
 
     return (parameters)
     }

@@ -30,8 +30,6 @@ model_with_possible_tzar_emulation <- function (parameters,
                                                 emulation_scratch_file_path
                                                 )
     {
-    emulation_scratch_file_path =
-        normalizePath (emulation_scratch_file_path)
     emulatingTzar =
         get_emulatingTzar_from_scratch_file (emulation_scratch_file_path)
 
@@ -57,8 +55,7 @@ cat ("\n\n========  END OF PARAMETERS  ==============\n\n")
         set_tzarOutputDir_in_scratch_file (parameters$fullOutputDirWithSlash,
                                            emulation_scratch_file_path)
 
-        parameters$tzarEmulation_scratchFileName =
-            normalizePath (emulation_scratch_file_path)
+        parameters$tzarEmulation_scratchFileName =emulation_scratch_file_path
 
         # cat (parameters$fullOutputDirWithSlash, "\n",
         #    file = emulation_scratch_file_path, sep='' )
