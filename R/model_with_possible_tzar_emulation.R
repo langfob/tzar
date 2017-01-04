@@ -43,22 +43,10 @@ model_with_possible_tzar_emulation <- function (parameters,
         {
         cat ("\n\n=====>  In model.R: emulatingTzar")
 
-
-cat ("\n\nparameters$fullOutputDirWithSlash = '",
-     parameters$fullOutputDirWithSlash, "'\n")
-cat ("emulation_scratch_file_path = '", emulation_scratch_file_path, "'\n")
-cat ("\n========  START OF PARAMETERS  ==============\n\n")
-cat ("\nparameters = \n\n")
-print (parameters)
-cat ("\n\n========  END OF PARAMETERS  ==============\n\n")
-
         set_tzarOutputDir_in_scratch_file (parameters$fullOutputDirWithSlash,
                                            emulation_scratch_file_path)
 
-        parameters$tzarEmulation_scratchFileName =emulation_scratch_file_path
-
-        # cat (parameters$fullOutputDirWithSlash, "\n",
-        #    file = emulation_scratch_file_path, sep='' )
+        parameters$tzarEmulation_scratchFileName = emulation_scratch_file_path
         }
 
     return (parameters)

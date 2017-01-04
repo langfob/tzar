@@ -92,15 +92,7 @@ set_tzarOutputDir_in_scratch_file <- function (tzarOutputDir,
 get_tzarOutputDir_from_scratch_file <- function (emulation_scratch_file_path)
     {
     scratch_values = yaml::yaml.load_file (emulation_scratch_file_path)
-
     tzarOutputDir = scratch_values$tzarOutputDir
-
-cat ("\n\nIn get_tzarOutputDir_from_scratch_file():",
-     "\nscratch_values = \n", sep='')
-print (scratch_values)
-cat ("\nEnd of scratch_values\n")
-
-    cat ("\n\ntzarOutputDir from scratch file = ", tzarOutputDir, "\n", sep='')
 
     return (tzarOutputDir)
     }
@@ -108,7 +100,6 @@ cat ("\nEnd of scratch_values\n")
 #===============================================================================
 
 emulateRunningTzar = function (projectPath,
-#                               tzarJarPath,
                                tzarEmulation_scratchFileName
                                )
     {
@@ -195,11 +186,6 @@ emulateRunningTzar = function (projectPath,
     tzarInProgressDirName =
             get_tzarOutputDir_from_scratch_file (tzarEmulation_scratchFileName)
 
-cat ("\n\n>>>>>  Just after get_tzarOutputDir_from_scratch_file:",
-     "'\n              to   (tzarInProgressDirName)  = '", tzarInProgressDirName,
-     "'\n              tzarEmulation_scratchFileName = '", tzarEmulation_scratchFileName,
-     "'\n", sep='')
-
             #  Build the name of the directory that would result if tzar
             #  successfully ran to completion without emulation, e.g.,
             #      /Users/bill/tzar/outputdata/biodivprobgen/default_runset/828_default_scenario
@@ -217,12 +203,6 @@ cat ("\n\n>>>>>  Just after get_tzarOutputDir_from_scratch_file:",
             #  So, to be able to use the parameters.R file as it was built
             #  during the dummy model.R run, we need to change the finished
             #  directory's name back to the .inprogress extension.
-
-cat ("\n\n>>>>>  Just before file.rename:",
-     "\n              from (tzarFinishedDirName)    = '", tzarFinishedDirName,
-     "'\n              to   (tzarInProgressDirName)  = '", tzarInProgressDirName,
-     "'\n              tzarEmulation_scratchFileName = '", tzarEmulation_scratchFileName,
-     "'\n", sep='')
 
     file.rename (tzarFinishedDirName, tzarInProgressDirName)
 
@@ -360,7 +340,6 @@ run_mainline_under_tzar_or_tzar_emulation <-
         cat ("\n\nIn run_mainline_under_tzar_or_tzar_emulation:  emulating running under tzar...")
 
         parameters = emulateRunningTzar (projectPath,
-#                                         tzarJarPath,
                                          emulation_scratch_file_path
                                          )
 
