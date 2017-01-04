@@ -59,9 +59,14 @@ trial_main_function <- function (parameters=NULL,
     #                                        echoConsoleToTempFile)
 
     if (is.null (parameters))
+        {
         parameters = list (x=15)
+        }
 
-    return (parameters$x)
+    cat ("\n\nparameters = \n")
+    print (parameters)
+
+    return (parameters)
     }
 
 #===============================================================================

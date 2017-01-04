@@ -1,18 +1,20 @@
 #===============================================================================
 
                         #-----------------------------------#
-                        #               model.R             #
+                        #              model.R              #
                         #-----------------------------------#
 
 #===============================================================================
 
-model_with_possible_tzar_emulation (
-    main_function                 = trial_main_function,
-    projectPath                   = ".",
-    tzarJarPath                   = "~/D/rdv-framework-latest-work/tzar.jar",
-    running_tzar_or_tzar_emulator = TRUE,
-    emulatingTzar                 = TRUE
-    )
+main_function                 = trial_main_function
+projectPath                   = "/Users/bill/D/Projects/ProblemDifficulty/pkgs/tzar/tests/testthat"
+tzarEmulation_scratchFileName = "~/tzar_emulation_scratch.yaml"
+
+model_with_possible_tzar_emulation (parameters,
+                                    main_function,
+                                    projectPath,
+                                    tzarEmulation_scratchFileName
+                                    )
 
 #===============================================================================
 

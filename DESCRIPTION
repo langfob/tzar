@@ -18,3 +18,5 @@ VignetteBuilder: knitr
 RoxygenNote: 5.0.1
 URL: https://github.com/langfob/tzar
 BugReports: https://github.com/langfob/tzar/issues
+Imports: utils, 
+         yaml

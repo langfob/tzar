@@ -57,8 +57,50 @@ run_tzar <- function (tzarJarPath, projectPath)
 
 #===============================================================================
 
+set_emulatingTzar_in_scratch_file <- function (emulating_tzar,
+                                               emulation_scratch_file_path)
+    {
+    cat ("emulatingTzar: ", emulating_tzar, "\n",
+         file=emulation_scratch_file_path, sep='')
+    }
+
+#-----------------------------------
+
+get_emulatingTzar_from_scratch_file <- function (emulation_scratch_file_path)
+    {
+    scratch_values = yaml::yaml.load_file (emulation_scratch_file_path)
+
+    emulatingTzar = as.logical (scratch_values$emulatingTzar)
+    cat ("\n\nemulatingTzar from scratch file = ", emulatingTzar, "\n", sep='')
+
+    return (emulatingTzar)
+    }
+
+#-------------------------------------------------------------------------------
+
+set_tzarOutputDir_in_scratch_file <- function (tzarOutputDir,
+                                               emulation_scratch_file_path)
+    {
+    cat ("tzarOutputDir: ", tzarOutputDir, "\n",
+         file=emulation_scratch_file_path, sep='')
+    }
+
+#-----------------------------------
+
+get_tzarOutputDir_from_scratch_file <- function (emulation_scratch_file_path)
+    {
+    scratch_values = yaml::yaml.load_file (emulation_scratch_file_path)
+
+    tzarOutputDir = scratch_values$fullOutputDirWithSlash
+    cat ("\n\ntzarOutputDir from scratch file = ", tzarOutputDir, "\n", sep='')
+
+    return (tzarOutputDir)
+    }
+
+#===============================================================================
+
 emulateRunningTzar = function (projectPath,
-                               tzarJarPath,
+#                               tzarJarPath,
                                tzarEmulation_scratchFileName
                                )
     {
@@ -110,7 +152,7 @@ emulateRunningTzar = function (projectPath,
         #     output directory.
         #-----------------------------------------------------------------------
 
-    run_tzar (tzarJarPath, projectPath)
+#    run_tzar (tzarJarPath, projectPath)
 
         #----------------------------------------------------------
         #  tzar has wildcard-substituted the inProgress name throughout
@@ -141,7 +183,9 @@ emulateRunningTzar = function (projectPath,
             #      tzarEmulation_scratchFile.txt
             #  Resulting dir name is something like:
             #      "/Users/bill/tzar/outputdata/biodivprobgen/default_runset/827_default_scenario.inprogress/"
-    tzarInProgressDirName = readLines (tzarEmulation_scratchFileName)
+#    tzarInProgressDirName = readLines (tzarEmulation_scratchFileName)
+    tzarInProgressDirName =
+            get_tzarOutputDir_from_scratch_file (tzarEmulation_scratchFileName)
 
             #  Build the name of the directory that would result if tzar
             #  successfully ran to completion without emulation, e.g.,
@@ -223,7 +267,7 @@ cleanUpAfterTzarEmulation = function (parameters)
 #===============================================================================
 
 get_parameters <- function (projectPath,
-                            tzarJarPath,
+#                            tzarJarPath,
                             tzarEmulation_scratchFileName,
                             emulatingTzar=FALSE
                             )
@@ -241,7 +285,7 @@ get_parameters <- function (projectPath,
         cat ("\n\nIn generateSetCoverProblem:  emulating running under tzar...")
 
         parameters = emulateRunningTzar (projectPath,
-                                         tzarJarPath,
+#                                         tzarJarPath,
                                          tzarEmulation_scratchFileName
                                          )
         }
@@ -251,35 +295,56 @@ get_parameters <- function (projectPath,
 
 #===============================================================================
 
-run_mainline_under_tzar_or_tzar_emulation <- function (parameters,
-                                               main_function,
-                                                projectPath,
-                                                tzarJarPath,
-                                                running_tzar_or_tzar_emulator=TRUE,
-                                                emulatingTzar=TRUE
-                                               )
+#' Run a function under normal tzar or tzar emulation
+#'
+#' @param main_function  name of function to call to run under tzar or tzar emulation
+#' @param projectPath path of R code and project.yaml file for project
+#' @param tzarJarPath Path to the jar file to use to run tzar
+#' @param emulation_scratch_file_path path of scratch file for passing tzarEmulation flag and tzarOutputDir between tzar and mainline function
+#' @param emulatingTzar boolean with TRUE indicating main_function should be run under tzar emulation and FALSE indicating run under normal tzar.
+#'
+#' @return nothing
+#' @export
+#'
+#' @examples \dontrun{
+#' run_mainline_under_tzar_or_tzar_emulation (main_function="trial_main_function",
+#'                                            projectPath=".",
+#'                                            tzarJarPath = "~/D/rdv-framework-latest-work/tzar.jar",
+#'                                            emulation_scratch_file_path="~/tzar_emulation_scratch.yaml",
+#'                                            emulatingTzar=TRUE
+#'                                           )
+#'}
+
+run_mainline_under_tzar_or_tzar_emulation <-
+        function (main_function,
+                  projectPath,
+                  tzarJarPath,
+                  emulation_scratch_file_path="~/tzar_emulation_scratch.yaml",
+                  emulatingTzar=TRUE
+                  )
     {
+    emulation_scratch_file_path = normalizePath (emulation_scratch_file_path)
+    set_emulatingTzar_in_scratch_file (emulatingTzar,
+                                       emulation_scratch_file_path)
+
+    run_tzar (tzarJarPath, projectPath)
+
     if (emulatingTzar)
         {
         cat ("\n\nIn run_mainline_under_tzar_or_tzar_emulation:  emulating running under tzar...")
 
         parameters = emulateRunningTzar (projectPath,
-                                         tzarJarPath,
-                                         tzarEmulation_scratchFileName
+#                                         tzarJarPath,
+                                         emulation_scratch_file_path
                                          )
 
-        main_function (parameters = parameters,
-                       running_tzar_or_tzar_emulator = running_tzar_or_tzar_emulator,
-                       emulatingTzar=emulatingTzar
-                       )
+        main_function (parameters)
 
         cleanUpAfterTzarEmulation (parameters)
 
         } else
         {
-        cat ("\n\nIn run_mainline_under_tzar_or_tzar_emulation:  emulating running under tzar...")
-
-        run_tzar (tzarJarPath, projectPath)
+        cat ("\n\nIn run_mainline_under_tzar_or_tzar_emulation:  running tzar WITHOUT emulation...")
         }
     }
 

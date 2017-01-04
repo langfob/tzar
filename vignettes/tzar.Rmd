@@ -50,55 +50,80 @@ print_x (parameters$x)
     
 #### How the conventions suggest a method for tzar emulation
 
-All we need to do to get access to the *parameters* list is to have model.R capture the path to where tzar did its work and in particular, where it wrote the *parameters* list to a parameters.R file.  To capture that value, we can just have model.R look up the location from the *parameters* list and write it to an agreed-upon scratch file location.  
-
-```{r eval=FALSE}
-scratch_file         <- normalizePath ("~/scratch.txt")
-tzar_output_location <- parameters$fullOutputDirWithSlash
-
-    #  Write the directory path for tzar's parameters.R file 
-    #  into the scratch file that our main program can read later.
-cat (parameters$fullOutputDirWithSlash, file = scratch_file, sep='\n' )
-```
-
-We can then read that file after tzar has decoded the *parameters* list and run the model.R code that does nothing but write the path to the scratch file.  Afterwards, in a preamble to our own real code, we just read the *parameters* list from the location specified in the scratch file and hand the reconstituted  *parameters* to our real code.  This parameters list will contain all of the paths and variable names that tzar has built based on the project.yaml file so that we don't have to build them ourselves.
+Tzar creates the parameters list and saves it to disk *regardless of what is done in model.R*.  So, in emulation mode we can take advantage of this by having model.R do nothing at all, except save the path to the directory where the parameters list was written.  We can easily do this by just having model.R write that path into a scratch file whenever it's doing emulation. The emulation code can then read the location from the scratch file and find the parameters.R file to load the parameters list and pass the reconstituted  *parameters* to our mainline application code.  This parameters list will contain all of the paths and variable names that tzar has built based on the project.yaml file so that we don't have to build them ourselves.
     
 ####  Allowing both normal tzar and tzar emulation
 
-The one other thing that we would like is for our code to still work without change when running under tzar rather than emulating tzar.  This is also easy to accomplish by just adding a boolean flag in model.R  indicating whether we are running tzar normally or just emulating it.  Each time you want to switch from emulation to normal tzar and vice versa, you just have to change the value of this flag in model.R.  
+The one other thing that we would like is for our code to still work with as little change as possible when running under tzar rather than emulating tzar.  This is easy to accomplish by just adding a boolean flag indicating whether we are running tzar normally or just emulating it.  Each time you want to switch from emulation to normal tzar and vice versa, you just have to change the value of this flag.  
 
-It would be nice if this could be handled without editing model.R, but it's probably the simplest way to make the change right now.  The flag's value will also probably only be changed very rarely, i.e., when you first start the project emulation will be on and then when things are working well enough to do final experiments, you switch emulation off.
+The only hitch is that the flag has to be known to both model.R and the emulation code.  At the moment, the simplest way to make sure that the value is the same in both bits of code is to read it from a file that both bits of code know about. This is a little bit clumsy, but the flag's value will probably only be changed very rarely, i.e., when you first start the project, emulation will be on and then when things are working well enough to do final experiments, you switch emulation off by editing this file.
 
 ##  Summary
 
-For each project that uses tzar emulation, you will need to do the following once  at the start of the project.  You may also need to change the emulatingTzar flag at some time during the project when you switch from emulation to running tzar normally.
+So, to summarize, our implementation of tzar emulation requires two pieces of code:  
 
-1. Copy the model.R file given here into your R source code area and in it, set:
+* one piece that runs inside model.R whenever tzar is invoked and 
+* another piece that wraps around our mainline application code to: 
+    + run tzar and 
+    + get the *parameters* list back from it if running in emulation mode
+    + run the mainline application.  
+    
+In pseudocode, this looks like the following:
+
+### In project.yaml:
+```
+Set emulatingTzar flag to TRUE if emulating, FALSE if running normal tzar.
+```
+
+### In wrapper R code around main application:
+```
+run tzar
+
+if (parameters$emulating tzar)  
+    read tzar output directory path from scratch file
+    load parameters list from tzar output directory
+    run mainline application
+```
+
+###  In model.R:
+
+```
+Assume called by tzar and tzar has already loaded parameters list from project.yaml
+
+if (parameters$emulatingTzar)  
+    do nothing except write tzar output directory path to scratch file
+else  
+    run mainline application
+```
+
+##  User steps required to enable tzar emulation
+
+For each project that uses tzar emulation, you will need to do the following once  at the start of the project.  You may also need to change the *emulatingTzar* flag at some time during the project when you switch from emulation to running tzar normally.
+
+1. Copy the model.R file given here into your R source code area and in it, set the following values of the function called in model.R:
 
     - main_function
     - projectPath
     - tzarJarPath
-    - running_tzar_or_tzar_emulator
-    - emulatingTzar
-2. Create a mainline wrapper function for your code that has the following 3 arguments, regardless of whether they're used or not:
+
+2. Make sure that your mainline application function has the following 3 arguments, regardless of whether they're used or not:
 
     - parameters
     - running_tzar_or_tzar_emulator
     - emulatingTzar
 3. Make sure that build_scratch_file_name() is writing the emulation scratch file where you want it.
-4. Make sure that the tzar package is loaded for your code.
-5. Make your topmost level of code call the function:
+4. Make sure that the tzarEmulation flag file exists in the appropriate directory and contains either TRUE or FALSE and nothing else.
+5. Make sure that the tzar package is loaded for your code.
+6. When running emulation rather than normal tzar, make sure that the project.yaml file is only doing a single run rather than using tzar's ability to generate lots of runs.
+7. Call the following function to run your mainline application code under tzar or tzar emulation:
 
 ```{r eval=FALSE}
 run_mainline_under_tzar_or_tzar_emulation (parameters,
                                                main_function,
                                                 projectPath,
-                                                tzarJarPath,
-                                                running_tzar_or_tzar_emulator,
-                                                emulatingTzar
+                                                tzarJarPath,                                                running_tzar_or_tzar_emulator
                                                )
 ```
-
 
 ##  Some useful tzar-related commands for reference
 

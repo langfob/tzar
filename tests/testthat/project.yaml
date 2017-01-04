@@ -1,0 +1,173 @@
+project_name: biodivprobgen
+runner_class: RRunner
+
+#####
+#####  2014 12 11 - BTL
+#####  Note that all variables containing the word "group" have been 
+#####  changed to use the word "group" instead.
+#####
+
+    #  Cloned from project.yaml in example-R-pop-model.
+    
+base_params:
+
+        #  BTL - 2014 12 28
+        #  This variable captures the tzar output path to hand it to the 
+        #  tzar emulation code.  It is absolutely necessary for the current 
+        #  version of emulation, but might go away in the future if River 
+        #  adds emulation directly inside of tzar with a "dry run" command.
+        #  Note that I had forgotten to add this variable to any of the 
+        #  project.yaml files used in biodivprobgen runs before today, so 
+        #  you need to add it back into any of those that you re-use under  
+        #  emulation.  That's not so likely though, since they're generally 
+        #  doing zillions of runs and you don't generally do that under 
+        #  emulation.
+    fullOutputDirWithSlash: $$output_path$$
+
+
+        #  SET THIS VALUE EVERY TIME...
+            #  Runset description to print in output since the runset name has 
+            #  to be short and tends to be cryptic.  The "|" should force the 
+            #  saved description string to include newlines in the string.  
+            #  If you don't want the newlines (i.e., you want one long string), 
+            #  then use a ">" in place of the "|".
+    runset_description: |
+        This runset is a simple biodivprobgen test for generating 1 run  
+        where the pr, r, n, and a values are all chosen from uniform random 
+        distributions with a random seed of 701.  The random values chosen 
+        are limited to try to be in the neighborhood of the phase transition 
+        to see if there are large errors there.  
+        
+#  In "simple model ..." paper, they use:
+#       n in [8..100] while alpha = 0.52, r = 1
+#       r in [0.8..2.5] while n = 20, alpha = 0.77
+#       alpha in [0.2..1] while n = 20, r = 2.5
+#  In all 3 cases, best fit to the theory was when the parameter
+#  was at the top of its range.  See figure 1 in the paper.
+#
+#  Values in the paper for propOfLinksBetweenGroups were more variable.
+#  See figures 2 and 3 and text in column 2 of page 4.
+#  In those examples, they had:
+#       Figure 2:   k=2, alpha=0.8, r=3, n in {20,30,40}
+#                   p in [0.14..0.36] w/ critical value Pcr ~ 0.23
+
+
+
+    #  SET THIS VALUE EVERY TIME...
+        #  Looks like there is currently no tzar wildcard to capture the 
+        #  the runset name, but it's very useful to add it to lines of 
+        #  output that will be combined with output from other runsets.
+    runset_name: single_test_unifRand_p_r_n_a_seed_701_in_phase_transition_area
+    runset_abbrev: st701phase
+
+
+    max_allowed_possible_tot_num_links: 2000
+
+        #  NOTE that the choice of random seed in the yaml file is important 
+        #  for this single run test because the example creates a test problem 
+        #  based on drawing the control parameters from a random distribution.  
+        #  When the seed was 111, the test crashed with the message below.  
+        #  When I changed it to 701, it ran to completion.
+        #       Failing:  max_possible_tot_num_links ( 3291 ) > maximum allowed ( 2000 ).
+        #       Save workspace image to ~/D/rdv-framework/projects/rdvPackages/biodivprobgen/.RData? [y/n/c]: 
+        #  However, the fail was just what it was supposed to do when those 
+        #  parameters came up, so the yaml file could be changed to use 111 
+        #  instead of 701 if you want to induce a crash to test that error 
+        #  trapping.
+
+    seed: 701
+
+            #  1 - num_groups = tot cost, so increase n to reduce cost
+            #  What is a reasonable range?
+            #  Xu uses ???
+            #
+            #      num_nodes_per_group = integerize (n__num_groups ^ alpha__)
+    n__num_groups: 10
+#####    n__num_groups: 30
+#    n__num_groups: 5
+#####    use_unif_rand_n__num_groups: FALSE
+    use_unif_rand_n__num_groups: TRUE
+    n__num_groups_lower_bound: 20
+    n__num_groups_upper_bound: 40
+    
+            #  Drives the number of PUs per group and so, tot num PUs
+            #  What is a reasonable range?
+            #  Xu uses ???
+            #
+            #  Increase alpha to increase num of PUs.
+            #      tot_num_nodes = n__num_groups * num_nodes_per_group
+    alpha__: 0.25
+#    alpha__: 0.8
+#####    use_unif_rand_alpha__: FALSE
+    use_unif_rand_alpha__: TRUE
+    alpha___lower_bound: 0
+    alpha___upper_bound: 1
+
+            #  p and r drive num of spp (increase p to increase num of spp)
+            #  What is a reasonable range?
+            #  Xu uses ???
+            #
+            #     target_num_links_between_2_groups_per_round = 
+            #         integerize (p__prop_of_links_between_groups * num_nodes_per_group)          
+            #     num_rounds_of_linking_between_groups = integerize (r__density * n__num_groups * log (n__num_groups))            
+            #     max_possible_num_links_between_groups = 
+            #         integerize (target_num_links_between_2_groups_per_round * num_rounds_of_linking_between_groups)
+            #     max_possible_tot_num_links = integerize (tot_num_links_inside_groups + max_possible_num_links_between_groups)
+
+#    p__prop_of_links_between_groups: 0.8
+    p__prop_of_links_between_groups: 0.28
+#####    use_unif_rand_p__prop_of_links_between_groups: FALSE
+    use_unif_rand_p__prop_of_links_between_groups: TRUE
+    p__prop_of_links_between_groups_lower_bound: 0.20
+    p__prop_of_links_between_groups_upper_bound: 0.36
+
+
+    r__density: 0.8
+#    r__density: 0.5
+#####    use_unif_rand_r__density: FALSE
+    use_unif_rand_r__density: TRUE
+    p__r__density_lower_bound: 2
+    p__r__density_upper_bound: 5
+
+
+
+#    n__num_groups: 12
+#    alpha__: 1.5
+#    p__prop_of_links_between_groups: 0.3
+#    r__density: 0.8
+
+
+        #  2014 12 11 - BTL - Added.
+    num_independent_nodes_per_group: 1
+    integerize_string: "round"
+    base_for_target_num_links_between_2_groups_per_round: "num_nodes_per_group"
+#    base_for_target_num_links_between_2_groups_per_round: "num_dependent_nodes_per_group"
+#    at_least_1_for_target_num_links_between_2_groups_per_round: TRUE
+    at_least_1_for_target_num_links_between_2_groups_per_round: FALSE
+
+
+    
+    run_id: $$run_id$$
+    
+    marxan_input_parameters_file_name: "/Users/bill/D/Marxan/input.dat"
+    marxan_num_reps: 100
+    marxan_num_iterations: "2000000"
+
+#    marxan_spf_const: 100
+    marxan_spf_const: 10
+    
+        # Outputs
+        
+    timepoints_filename: $$output_path$$timepoints.csv
+
+    summary_filename: $$output_path$$prob_diff_results.csv
+    summary_without_run_id_filename: $$output_path$$prob_diff_results_with_0_run_id.csv
+#    output.plot : $$output_path$$poptraj
+#    output.dump : $$output_path$$projtraj.R
+
+          
+#concatenate:
+#  heading_row: true
+#  input_filename: prob_diff_results.csv
+#  output_filename: all_results_prob_diff.csv
+
