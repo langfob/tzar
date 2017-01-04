@@ -49,11 +49,11 @@ trial_main_function <- function (parameters=NULL,
                                  emulatingTzar=FALSE
                                  )
     {
-    cat ("\n\nDummy call to trial_main_function().\n\n")
-
-    cat ("\nrunning_tzar_or_tzar_emulator = ", running_tzar_or_tzar_emulator)
-    cat ("\nemulatingTzar                 = ", emulatingTzar)
-    cat ("\n\n")
+    # cat ("\n\nDummy call to trial_main_function().\n\n")
+    #
+    # cat ("\nrunning_tzar_or_tzar_emulator = ", running_tzar_or_tzar_emulator)
+    # cat ("\nemulatingTzar                 = ", emulatingTzar)
+    # cat ("\n\n")
 
     # open_console_output_file_if_necessary (emulatingTzar,
     #                                        echoConsoleToTempFile)
@@ -63,8 +63,8 @@ trial_main_function <- function (parameters=NULL,
         parameters = list (x=15)
         }
 
-    cat ("\n\nparameters = \n")
-    print (parameters)
+#    cat ("\n\nparameters = \n")
+#    print (parameters)
 
     return (parameters)
     }

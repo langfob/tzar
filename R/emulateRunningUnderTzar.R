@@ -93,7 +93,13 @@ get_tzarOutputDir_from_scratch_file <- function (emulation_scratch_file_path)
     {
     scratch_values = yaml::yaml.load_file (emulation_scratch_file_path)
 
-    tzarOutputDir = scratch_values$fullOutputDirWithSlash
+    tzarOutputDir = scratch_values$tzarOutputDir
+
+cat ("\n\nIn get_tzarOutputDir_from_scratch_file():",
+     "\nscratch_values = \n", sep='')
+print (scratch_values)
+cat ("\nEnd of scratch_values\n")
+
     cat ("\n\ntzarOutputDir from scratch file = ", tzarOutputDir, "\n", sep='')
 
     return (tzarOutputDir)
@@ -189,6 +195,11 @@ emulateRunningTzar = function (projectPath,
     tzarInProgressDirName =
             get_tzarOutputDir_from_scratch_file (tzarEmulation_scratchFileName)
 
+cat ("\n\n>>>>>  Just after get_tzarOutputDir_from_scratch_file:",
+     "'\n              to   (tzarInProgressDirName)  = '", tzarInProgressDirName,
+     "'\n              tzarEmulation_scratchFileName = '", tzarEmulation_scratchFileName,
+     "'\n", sep='')
+
             #  Build the name of the directory that would result if tzar
             #  successfully ran to completion without emulation, e.g.,
             #      /Users/bill/tzar/outputdata/biodivprobgen/default_runset/828_default_scenario
@@ -206,6 +217,12 @@ emulateRunningTzar = function (projectPath,
             #  So, to be able to use the parameters.R file as it was built
             #  during the dummy model.R run, we need to change the finished
             #  directory's name back to the .inprogress extension.
+
+cat ("\n\n>>>>>  Just before file.rename:",
+     "\n              from (tzarFinishedDirName)    = '", tzarFinishedDirName,
+     "'\n              to   (tzarInProgressDirName)  = '", tzarInProgressDirName,
+     "'\n              tzarEmulation_scratchFileName = '", tzarEmulation_scratchFileName,
+     "'\n", sep='')
 
     file.rename (tzarFinishedDirName, tzarInProgressDirName)
 
@@ -299,22 +316,25 @@ get_parameters <- function (projectPath,
 
 #' Run a function under normal tzar or tzar emulation
 #'
-#' @param main_function  name of function to call to run under tzar or tzar emulation
+#' @param main_function  function to call to run under tzar or tzar emulation
+#' (NOTE: NOT a string)
 #' @param projectPath path of R code and project.yaml file for project
 #' @param tzarJarPath Path to the jar file to use to run tzar
-#' @param emulation_scratch_file_path path of scratch file for passing tzarEmulation flag and tzarOutputDir between tzar and mainline function
-#' @param emulatingTzar boolean with TRUE indicating main_function should be run under tzar emulation and FALSE indicating run under normal tzar.
+#' @param emulation_scratch_file_path path of scratch file for passing
+#' tzarEmulation flag and tzarOutputDir between tzar and mainline function
+#' @param emulatingTzar boolean with TRUE indicating main_function should be
+#' run under tzar emulation and FALSE indicating run under normal tzar.
 #'
-#' @return nothing
+#' @return parameters list of parameters loaded from project.yaml file
 #' @export
 #'
 #' @examples \dontrun{
-#' run_mainline_under_tzar_or_tzar_emulation (main_function="trial_main_function",
-#'                                            projectPath=".",
-#'                                            tzarJarPath = "~/D/rdv-framework-latest-work/tzar.jar",
-#'                                            emulation_scratch_file_path="~/tzar_emulation_scratch.yaml",
-#'                                            emulatingTzar=TRUE
-#'                                           )
+#' run_mainline_under_tzar_or_tzar_emulation (main_function=trial_main_function,
+#'          projectPath=".",
+#'          tzarJarPath = "~/D/rdv-framework-latest-work/tzar.jar",
+#'          emulation_scratch_file_path="~/tzar_emulation_scratch.yaml",
+#'          emulatingTzar=TRUE
+#'          )
 #'}
 
 run_mainline_under_tzar_or_tzar_emulation <-
@@ -348,6 +368,8 @@ run_mainline_under_tzar_or_tzar_emulation <-
         {
         cat ("\n\nIn run_mainline_under_tzar_or_tzar_emulation:  running tzar WITHOUT emulation...")
         }
+
+    return (parameters)
     }
 
 #===============================================================================
