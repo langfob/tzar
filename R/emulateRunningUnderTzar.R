@@ -60,8 +60,9 @@ run_tzar <- function (tzarJarPath, projectPath)
 set_emulatingTzar_in_scratch_file <- function (emulating_tzar,
                                                emulation_scratch_file_path)
     {
-    cat ("emulatingTzar: ", emulating_tzar, "\n",
-         file=emulation_scratch_file_path, sep='')
+    scratch_file = file (emulation_scratch_file_path, "w")
+    cat ("emulatingTzar: ", emulating_tzar, "\n", file=scratch_file, sep='')
+    close (scratch_file)
     }
 
 #-----------------------------------
@@ -81,8 +82,9 @@ get_emulatingTzar_from_scratch_file <- function (emulation_scratch_file_path)
 set_tzarOutputDir_in_scratch_file <- function (tzarOutputDir,
                                                emulation_scratch_file_path)
     {
-    cat ("tzarOutputDir: ", tzarOutputDir, "\n",
-         file=emulation_scratch_file_path, sep='')
+    scratch_file = file (emulation_scratch_file_path, "w")
+    cat ("tzarOutputDir: ", tzarOutputDir, "\n", file=scratch_file, sep='')
+    close (scratch_file)
     }
 
 #-----------------------------------
