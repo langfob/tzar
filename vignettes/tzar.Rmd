@@ -11,7 +11,7 @@ vignette: >
 
 ##  Overview
 
-The java program tzar helps with managing many runs of sets of experiments and making them easier to reproduce.  tzar itself is documented and downloadable from https://tzar-framework.atlassian.net/wiki/display/TD/Tzar+documentation.
+The java program tzar helps with managing many runs of sets of experiments and making them easier to reproduce.  tzar itself is documented at and downloadable from https://tzar-framework.atlassian.net/wiki/display/TD/Tzar+documentation.
 
 One problem with tzar is that it runs your R code in a separate process that makes it difficult, if not impossible, to easily debug your R code.  The tzar package is intended to make it easy to emulate running tzar while keeping the running code under your control (e.g., inside RStudio).  This allows more interaction with your code, e.g., allowing the use of the browser() function to pause and examine variables.  Similarly, when your program crashes in emulation mode you can get at lots of information that is lost or truncated when the program is run in a separate tzar process.  
 
