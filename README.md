@@ -16,6 +16,13 @@ You can install tzar from github with:
 devtools::install_github ("langfob/tzar")
 ```
 
+The basic idea behind the emulator (for experienced tzar users)
+---------------------------------------------------------------
+
+The basic idea is that running tzar with an empty model.R produces all the same setup as running with a model.R that calls your applciation code. Consequently, you could run tzar with an empty model.R, go look for the most recent directory that tzar had created, then load the parameters.R file from that directory. At that point, you could run your own application code with the newly loaded parameters list and it would be nearly indistinguishable from running your code under tzar but you would have control of your code for debugging, etc.
+
+The emulator just automatically manages the finding, loading, and running for you. It also manages a few other details of directory naming to indicate that a job ran and/or failed under emulation.To use the emulator, you just have to add a call to one of the emulator's functions in your model.R and another one in your application code.
+
 Simple example
 --------------
 
@@ -58,12 +65,13 @@ base_params:
 
 #### To run under tzar emulation
 
-We have to do 2 things:
+We have to do 3 things:
 
--   First, we would have to edit the **model.R** file to set the argument variables correctly. Assuming that:
+-   First, make sure that the tzar emulator package is installed (as described above) and loaded with a call such as "library(tzar)".
+-   Second, we would have to edit the **model.R** file to set the argument variables correctly. Assuming that:
 
     -   the tzar jar file was in the directory "~/tzar"
-    -   we want the tzar emulation scratch file in our home directory
+    -   we want the tzar emulation scratch file in our home directory (though you can put it anywhere you want)
         -   tzar emulation requires the use of a tiny scratch file that you don't need to know anything about, other than specifying where to put it.
         -   The file is deleted at the end of the run, so its location is not terribly important.
     -   the R code is in the current working directory
@@ -83,7 +91,7 @@ model_with_possible_tzar_emulation (parameters,
                                     )
 ```
 
--   Second, we would make a **function call** something like this one at the R prompt to run the program under tzar emulation:
+-   Third, we would make a **function call** something like this one at the R prompt to run the program under tzar emulation:
 
 ``` r
 run_mainline_under_tzar_or_tzar_emulation (
@@ -97,7 +105,9 @@ run_mainline_under_tzar_or_tzar_emulation (
 
 #### To run under normal tzar without emulation
 
-We would leave model.R as above and then just change the final argument to run\_mainline\_under\_tzar\_or\_tzar\_emulation(), i.e., change emulatingTzar to FALSE:
+We would leave model.R as above and then just change the final argument to run\_mainline\_under\_tzar\_or\_tzar\_emulation(), i.e., change emulatingTzar to FALSE. Note that:
+- You don't have to run tzar yourself; the emulator runs it for you, and
+- This only works for local running of tzar for a single run since it's intended only to be used for development. Once in production and spawning lots of runs, you would go back to normal command-line calls to tzar. - Even this could be changed though, if we were to add tzar-control arguments to the run\_mainline...() call and pass them on to its call to execute tzar.
 
 ``` r
 run_mainline_under_tzar_or_tzar_emulation (
