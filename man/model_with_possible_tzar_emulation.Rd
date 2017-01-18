@@ -8,7 +8,7 @@ model_with_possible_tzar_emulation(parameters, main_function, projectPath,
   emulation_scratch_file_path)
 }
 \arguments{
-\item{parameters}{list of parameters build by tzar from project.yaml}
+\item{parameters}{list of parameters built by tzar from project.yaml}
 
 \item{main_function}{name of function to call to run under tzar or tzar emulation}
 

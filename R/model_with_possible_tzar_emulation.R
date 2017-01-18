@@ -8,7 +8,7 @@
 
 #' model.R code for tzar or tzar emulation
 #'
-#' @param parameters  list of parameters build by tzar from project.yaml
+#' @param parameters  list of parameters built by tzar from project.yaml
 #' @param main_function  name of function to call to run under tzar or tzar emulation
 #' @param projectPath path of R code and project.yaml file for project
 #' @param emulation_scratch_file_path path of scratch file for passing tzarEmulation flag and tzarOutputDir between tzar and mainline function
