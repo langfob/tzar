@@ -37,7 +37,7 @@ print_x <- function (x)
     }
 ```
 
-### Print a value from a parameters list.
+#### Print a value from a parameters list.
 
 ``` r
 print_x <- function (parameters)
@@ -51,7 +51,7 @@ print_x (parameters)
 #> Value of x = 'a value from a list of parameters'
 ```
 
-### Print a value from a parameters list specified in a project.yaml file
+#### Print a value from a parameters list specified in a project.yaml file
 
 Suppose that the project.yaml file contains:
 
@@ -119,8 +119,10 @@ run_mainline_under_tzar_or_tzar_emulation (
     )
 ```
 
-User steps required to enable tzar emulation
---------------------------------------------
+------------------------------------------------------------------------
+
+SUMMARY: User steps required to enable tzar emulation
+-----------------------------------------------------
 
 For each project that uses tzar emulation, you will need to do the steps below, once at the start of the project. There are a fair number of these steps but they are all pretty simple. The reason for all this is that the whole process is a complete hack aimed at deceiving tzar into doing what we want. There has been talk of adding a "dry run" option to tzar to properly do what this hack does, but so far, it's just talk. In the meantime, this hack works.
 
