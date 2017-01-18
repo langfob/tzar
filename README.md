@@ -91,7 +91,7 @@ model_with_possible_tzar_emulation (parameters,
                                     )
 ```
 
--   Third, we would make a **function call** something like this one at the R prompt to run the program under tzar emulation:
+-   Third, we would make a **function call** something like this one (e.g., at the R prompt or in a file being sourced) to run the program under tzar emulation:
 
 ``` r
 run_mainline_under_tzar_or_tzar_emulation (
@@ -137,7 +137,7 @@ For each project that uses tzar emulation, you will need to do the steps below, 
     -   This is a tzar requirement and not specific to tzar emulation.
 -   **When running emulation** rather than normal tzar, make sure that the **project.yaml file is only doing a single run** rather than using tzar's ability to generate lots of runs (e.g., with a repetitions section).
     -   If you were to generate multiple runs, there would be ambiguity because there would be more than one place to look for the parameters.R file that tzar generates.
--   **Call the following function** at the R prompt or on RStudio's command line to invoke the whole process, i.e., to run your mainline application code under tzar or tzar emulation:
+-   **Call the following function** to invoke the whole process, i.e., to run your mainline application code under tzar or tzar emulation:
 
 ``` r
 run_mainline_under_tzar_or_tzar_emulation (main_function,
