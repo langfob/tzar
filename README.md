@@ -95,11 +95,11 @@ model_with_possible_tzar_emulation (parameters,
 
 ``` r
 run_mainline_under_tzar_or_tzar_emulation (
+    emulatingTzar               = TRUE, 
     main_function               = print_x,    #  note, no quotes on name
     projectPath                 = ".",
     tzarJarPath                 = "~/tzar/tzar.jar", 
-    emulation_scratch_file_path = "~/tzar_em_scratch.yaml",
-    emulatingTzar               = TRUE
+    emulation_scratch_file_path = "~/tzar_em_scratch.yaml"
     )
 ```
 
@@ -111,11 +111,11 @@ We would leave model.R as above and then just change the final argument to run\_
 
 ``` r
 run_mainline_under_tzar_or_tzar_emulation (
+    emulatingTzar               = FALSE, 
     main_function               = print_x,    #  note, no quotes on name
     projectPath                 = ".",
     tzarJarPath                 = "~/tzar/tzar.jar", 
-    emulation_scratch_file_path = "~/tzar_em_scratch.yaml",
-    emulatingTzar               = FALSE
+    emulation_scratch_file_path = "~/tzar_em_scratch.yaml"
     )
 ```
 
@@ -142,10 +142,10 @@ For each project that uses tzar emulation, you will need to do the steps below, 
 -   **Call the following function** to invoke the whole process, i.e., to run your mainline application code under tzar or tzar emulation:
 
 ``` r
-run_mainline_under_tzar_or_tzar_emulation (main_function,
+run_mainline_under_tzar_or_tzar_emulation (emulatingTzar, 
+                                           main_function,
                                            projectPath,
                                            tzarJarPath, 
-                                           emulation_scratch_file_path,
-                                           emulatingTzar
+                                           emulation_scratch_file_path
                                            )
 ```

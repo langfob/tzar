@@ -4,11 +4,14 @@
 \alias{run_mainline_under_tzar_or_tzar_emulation}
 \title{Run a function under normal tzar or tzar emulation}
 \usage{
-run_mainline_under_tzar_or_tzar_emulation(main_function, projectPath,
-  tzarJarPath, emulation_scratch_file_path = "~/tzar_emulation_scratch.yaml",
-  emulatingTzar = TRUE)
+run_mainline_under_tzar_or_tzar_emulation(emulatingTzar = TRUE, main_function,
+  projectPath, tzarJarPath,
+  emulation_scratch_file_path = "~/tzar_emulation_scratch.yaml")
 }
 \arguments{
+\item{emulatingTzar}{boolean with TRUE indicating main_function should be
+run under tzar emulation and FALSE indicating run under normal tzar.}
+
 \item{main_function}{function to call to run under tzar or tzar emulation
 (NOTE: NOT a string)}
 
@@ -18,9 +21,6 @@ run_mainline_under_tzar_or_tzar_emulation(main_function, projectPath,
 
 \item{emulation_scratch_file_path}{path of scratch file for passing
 tzarEmulation flag and tzarOutputDir between tzar and mainline function}
-
-\item{emulatingTzar}{boolean with TRUE indicating main_function should be
-run under tzar emulation and FALSE indicating run under normal tzar.}
 }
 \value{
 parameters list of parameters loaded from project.yaml file
@@ -30,11 +30,12 @@ Run a function under normal tzar or tzar emulation
 }
 \examples{
 \dontrun{
-run_mainline_under_tzar_or_tzar_emulation (main_function=trial_main_function,
+run_mainline_under_tzar_or_tzar_emulation (
+         emulatingTzar=TRUE,
+         main_function=trial_main_function,
          projectPath=".",
          tzarJarPath = "~/D/rdv-framework-latest-work/tzar.jar",
-         emulation_scratch_file_path="~/tzar_emulation_scratch.yaml",
-         emulatingTzar=TRUE
+         emulation_scratch_file_path="~/tzar_emulation_scratch.yaml"
          )
 }
 }
