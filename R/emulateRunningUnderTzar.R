@@ -41,7 +41,7 @@
 
 #===============================================================================
 
-run_tzar <- function (tzarJarPath, projectPath)
+run_tzar_java_jar <- function (tzarJarPath, projectPath)
     {
     tzarCmd = paste ("-jar", tzarJarPath, "execlocalruns", projectPath)
     current.os = utils::sessionInfo()$R.version$os
@@ -151,7 +151,7 @@ emulateRunningTzar = function (projectPath,
         #     output directory.
         #-----------------------------------------------------------------------
 
-#    run_tzar (tzarJarPath, projectPath)
+#    run_tzar_java_jar (tzarJarPath, projectPath)
 
         #----------------------------------------------------------
         #  tzar has wildcard-substituted the inProgress name throughout
@@ -307,7 +307,7 @@ get_parameters <- function (projectPath,
 #' @export
 #'
 #' @examples \dontrun{
-#' run_mainline_under_tzar_or_tzar_emulation (
+#' run_tzar (
 #'          emulatingTzar=TRUE,
 #'          main_function=trial_main_function,
 #'          projectPath=".",
@@ -316,7 +316,7 @@ get_parameters <- function (projectPath,
 #'          )
 #'}
 
-run_mainline_under_tzar_or_tzar_emulation <-
+run_tzar <-
         function (emulatingTzar=TRUE,
                   main_function,
                   projectPath,
@@ -334,11 +334,11 @@ run_mainline_under_tzar_or_tzar_emulation <-
     set_emulatingTzar_in_scratch_file (emulatingTzar,
                                        emulation_scratch_file_path)
 
-    run_tzar (tzarJarPath, projectPath)
+    run_tzar_java_jar (tzarJarPath, projectPath)
 
     if (emulatingTzar)
         {
-        cat ("\n\nIn run_mainline_under_tzar_or_tzar_emulation:  emulating running under tzar...")
+        cat ("\n\nIn run_tzar:  emulating running under tzar...")
 
         parameters = emulateRunningTzar (projectPath,
                                          emulation_scratch_file_path
@@ -350,7 +350,7 @@ run_mainline_under_tzar_or_tzar_emulation <-
 
         } else
         {
-        cat ("\n\nIn run_mainline_under_tzar_or_tzar_emulation:  running tzar WITHOUT emulation...")
+        cat ("\n\nIn run_tzar:  running tzar WITHOUT emulation...")
         }
 
     file.remove (emulation_scratch_file_path)    # parameters$tzarEmulation_scratchFileName)
@@ -359,5 +359,4 @@ run_mainline_under_tzar_or_tzar_emulation <-
     }
 
 #===============================================================================
-
 

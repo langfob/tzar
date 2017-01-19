@@ -9,12 +9,12 @@ source ("./model_support_code.R")
 #   WORK INSIDE OF TESTTHAT WITHOUT UNDERSTANDING A LOT MORE ABOUT TESTTHAT...
 
 # test_that("tzar emulation works", {
-# parameters = run_mainline_under_tzar_or_tzar_emulation (main_function=trial_main_function,
-#                                            projectPath="/Users/bill/D/Projects/ProblemDifficulty/pkgs/tzar/tests/testthat",
-#                                            tzarJarPath = "~/D/rdv-framework-latest-work/tzar.jar",
-#                                            emulation_scratch_file_path="~/tzar_emulation_scratch.yaml",
-#                                            emulatingTzar=TRUE
-#                                            )
+# parameters = run_tzar (main_function=trial_main_function,
+#                        projectPath="/Users/bill/D/Projects/ProblemDifficulty/pkgs/tzar/tests/testthat",
+#                        tzarJarPath = "~/D/rdv-framework-latest-work/tzar.jar",
+#                        emulation_scratch_file_path="~/tzar_emulation_scratch.yaml",
+#                        emulatingTzar=TRUE
+#                        )
 # cat ("\n>>>>>>>  in test that tzar emulation works, length (parameters) = '",
 #      length(parameters), "'\n", sep='')
 #

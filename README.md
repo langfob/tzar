@@ -94,7 +94,7 @@ model_with_possible_tzar_emulation (parameters,
 -   Third, we would make a **function call** something like this one (e.g., at the R prompt or in a file being sourced) to run the program under tzar emulation:
 
 ``` r
-run_mainline_under_tzar_or_tzar_emulation (
+run_tzar (
     emulatingTzar               = TRUE, 
     main_function               = print_x,    #  note, no quotes on name
     projectPath                 = ".",
@@ -105,12 +105,12 @@ run_mainline_under_tzar_or_tzar_emulation (
 
 #### To run under normal tzar without emulation
 
-We would leave model.R as above and then just change the final argument to run\_mainline\_under\_tzar\_or\_tzar\_emulation(), i.e., change emulatingTzar to FALSE. Note that:
+We would leave model.R as above and then just change the final argument to run\_tzar(), i.e., change emulatingTzar to FALSE. Note that:
 - You don't have to run tzar yourself; the emulator runs it for you, and
 - This only works for local running of tzar for a single run since it's intended only to be used for development. Once in production and spawning lots of runs, you would go back to normal command-line calls to tzar. - Even this could be changed though, if we were to add tzar-control arguments to the run\_mainline...() call and pass them on to its call to execute tzar.
 
 ``` r
-run_mainline_under_tzar_or_tzar_emulation (
+run_tzar (
     emulatingTzar               = FALSE, 
     main_function               = print_x,    #  note, no quotes on name
     projectPath                 = ".",
@@ -142,10 +142,10 @@ For each project that uses tzar emulation, you will need to do the steps below, 
 -   **Call the following function** to invoke the whole process, i.e., to run your mainline application code under tzar or tzar emulation:
 
 ``` r
-run_mainline_under_tzar_or_tzar_emulation (emulatingTzar, 
-                                           main_function,
-                                           projectPath,
-                                           tzarJarPath, 
-                                           emulation_scratch_file_path
-                                           )
+run_tzar (emulatingTzar, 
+           main_function,
+           projectPath,
+           tzarJarPath, 
+           emulation_scratch_file_path
+           )
 ```
