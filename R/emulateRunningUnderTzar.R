@@ -363,11 +363,11 @@ try_to_write_model_R_file_to_work_area <-
 #'}
 
 run_tzar <-
-        function (emulating_tzar                     = emulating_tzar,
-                  main_function                      = main,
-                  project_path                       = project_path,
-                  emulation_scratch_file_path        = emulation_scratch_file_path,
-                  tzar_jar_path                      = tzar_jar_path,
+        function (emulating_tzar,
+                  main_function,
+                  project_path,
+                  emulation_scratch_file_path,
+                  tzar_jar_path,
 
                   copy_model_R_tzar_file             = FALSE,
                   model_R_tzar_src_dir               = ".",
@@ -490,11 +490,11 @@ run_tzar <-
 #'}
 
 run_tzar_outside_pkg <-
-        function (emulating_tzar                     = emulating_tzar,
-                  main_function                      = main,
-                  project_path                       = project_path,
-                  emulation_scratch_file_path        = emulation_scratch_file_path,
-                  tzar_jar_path                      = tzar_jar_path
+        function (emulating_tzar,
+                  main_function,
+                  project_path,
+                  emulation_scratch_file_path,
+                  tzar_jar_path
                   )
     {
     return (run_tzar (emulating_tzar                     = emulating_tzar,
