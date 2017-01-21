@@ -18,7 +18,7 @@ library (tzar)
 #library (YOUR_PKG_NAME)
 
     #-----------------------------------------------------------------
-    #  Call you project code via the "main_function" argument.
+    #  Call your project code via the "main_function" argument.
     #  You can change any or all of the last 3 arguments if you need
     #  to for your project.
     #  However, you won't need to do that for most projects.
