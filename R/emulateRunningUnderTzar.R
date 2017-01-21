@@ -72,7 +72,6 @@ get_emulating_tzar_from_scratch_file <- function (emulation_scratch_file_path)
     scratch_values = yaml::yaml.load_file (emulation_scratch_file_path)
 
     emulating_tzar = as.logical (scratch_values$emulating_tzar)
-    cat ("\n\nemulating_tzar from scratch file = ", emulating_tzar, "\n", sep='')
 
     return (emulating_tzar)
     }
@@ -203,7 +202,7 @@ emulateRunningTzar = function (project_path,
             #  So, to be able to use the parameters.R file as it was built
             #  during the dummy model.R run, we need to change the finished
             #  directory's name back to the .inprogress extension.
-browser()
+
     file.rename (tzarFinishedDirName, tzarInProgressDirName)
 
         #-----------------------------------------------------------
@@ -440,39 +439,28 @@ run_tzar <-
                                                 full_model_R_dest_path,
                                                 overwrite_existing_model_R_dest)
         }
-cat ("\nIn run_tzar():  About to run_tzar_java_jar().\n")
 
     run_tzar_java_jar (tzar_jar_path, project_path)
-
-cat ("\nIn run_tzar():  Back from run_tzar_java_jar().\n")
 
     if (emulating_tzar)
         {
         cat ("\n\nIn run_tzar:  emulating running under tzar...")
 
-cat ("\nIn run_tzar():  About to emulateRunningTzar().\n")
-
         parameters = emulateRunningTzar (project_path,
                                          emulation_scratch_file_path
                                          )
-cat ("\nIn run_tzar():  Back from emulateRunningTzar(), about to run main_function().\n")
 
         main_function (parameters)
-cat ("\nIn run_tzar():  Back from main_function(), about to cleanUpAfterTzarEmulation().\n")
 
         cleanUpAfterTzarEmulation (parameters)
-cat ("\nIn run_tzar():  Back from cleanUpAfterTzarEmulation().\n")
 
         } else
         {
         cat ("\n\nIn run_tzar:  running tzar WITHOUT emulation...")
         }
-cat ("\nIn run_tzar():  About to test if (copy_model_R_tzar_file).\n")
 
     if (copy_model_R_tzar_file)    #  If model.R was copied in, get rid of it.
         file.remove (full_model_R_dest_path)
-
-cat ("\nIn run_tzar():  Done with if (copy_model_R_tzar_file), about to remove emulation_scratch_file_path.\n")
 
     file.remove (emulation_scratch_file_path)    # parameters$tzarEmulation_scratchFileName)
 
