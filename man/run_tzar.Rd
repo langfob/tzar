@@ -4,11 +4,9 @@
 \alias{run_tzar}
 \title{Run a function under normal tzar or tzar emulation}
 \usage{
-run_tzar(emulating_tzar = emulating_tzar, main_function = main,
-  project_path = project_path,
-  emulation_scratch_file_path = emulation_scratch_file_path,
-  tzar_jar_path = tzar_jar_path, copy_model_R_tzar_file = FALSE,
-  model_R_tzar_src_dir = model_R_tzar_src_dir,
+run_tzar(emulating_tzar, main_function, project_path,
+  emulation_scratch_file_path, tzar_jar_path, copy_model_R_tzar_file = FALSE,
+  model_R_tzar_src_dir = ".",
   model_R_tzar_disguised_filename = "model.R.tzar",
   overwrite_existing_model_R_dest = TRUE,
   required_model_R_filename_for_tzar = "model.R")
