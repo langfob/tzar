@@ -259,6 +259,10 @@ cleanUpAfterTzarEmulation = function (parameters)
 
     file.rename (parameters$tzarInProgressDirName,
                  parameters$tzarEmulationCompletedDirName)
+
+    cat ("\n\nFinal tzar output is in:\n    '",
+         parameters$tzarEmulationCompletedDirName,
+         "'\n\n", sep='')
     }
 
 #===============================================================================
