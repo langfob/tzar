@@ -2,3 +2,4 @@
 
 export(model_with_possible_tzar_emulation)
 export(run_tzar)
+export(run_tzar_outside_pkg)
