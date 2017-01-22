@@ -51,7 +51,7 @@ For each project that uses tzar emulation, you will need to do the steps below, 
 
 - **Copy the R template files** from the package into the R source code area where you want to work.
     - In the code below, replace *YOUR_R_WORKING_AREA* with the location of the R code for your project.
-    - Also, note that *get_tzar_R_templates()* has two arguments that you can modify if you need to, i.e., the target directory and a flag indicating whether model.R should be renamed to model.R.tzar or left as model.R.  It never hurts to leave the 
+    - Also, note that *get_tzar_R_templates()* has two arguments that you can modify if you need to, i.e., the target directory and a flag indicating whether model.R should be renamed to model.R.tzar or left as model.R.  It never hurts to leave the flag set to the default value of TRUE because that will never accidentally overwrite a model.R file that you may have already created in your work area.
 
 ```{R eval=FALSE}
 library (tzar)
