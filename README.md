@@ -33,14 +33,14 @@ For each project that uses tzar emulation, you will need to do the steps below, 
 
 ### Main steps
 
--   *Once for each project* where you want to use tzar emulation:
-    -   Copy the *tzar\_main* and *model* template files from the tzar package
-    -   Edit the *model* template if necessary
-    -   Edit the *tzar\_main* template to match your project's directories, etc.
-    -   Make sure that the **tzar package is loaded**.
-    -   Make sure that you have a **project.yaml file in the projectPath directory**.
--   *Each time you want to run tzar or tzar emulation* on that project:
-    -   Run *runttip()* or *runtop()*
+-   **Once for each project** where you want to use tzar emulation:
+    -   **Copy the *tzar\_main* and *model* template files** from the tzar package
+    -   **Edit the *model* template** if necessary
+    -   **Edit the *tzar\_main* template** to match your project's directories, etc.
+    -   Make sure that the ***tzar package* is loaded**.
+    -   Make sure that you have a ***project.yaml* file in the projectPath directory**.
+-   **Each time you want to run tzar or tzar emulation** on that project:
+    -   **Run runtip() or runtop()**
 
 ### Details of each step
 

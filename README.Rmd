@@ -40,14 +40,14 @@ For each project that uses tzar emulation, you will need to do the steps below, 
 - The reason for all this is that the whole process is a complete hack aimed at deceiving tzar into doing what we want.  There has been talk of adding a "dry run" option to tzar to properly do what this hack does, but so far, it's just talk.  In the meantime, this hack works.
 
 ###  Main steps
-- *Once for each project* where you want to use tzar emulation:
-    - Copy the *tzar_main* and *model* template files from the tzar package
-    - Edit the *model* template if necessary
-    - Edit the *tzar_main* template to match your project's directories, etc.
-    - Make sure that the **tzar package is loaded**.
-    - Make sure that you have a **project.yaml file in the projectPath directory**.   
-- *Each time you want to run tzar or tzar emulation* on that project:
-    - Run *runttip()* or *runtop()*
+- **Once for each project** where you want to use tzar emulation:
+    - **Copy the *tzar_main* and *model* template files** from the tzar package
+    - **Edit the *model* template** if necessary
+    - **Edit the *tzar_main* template** to match your project's directories, etc.
+    - Make sure that the **_tzar package_ is loaded**.
+    - Make sure that you have a **_project.yaml_ file in the projectPath directory**.   
+- **Each time you want to run tzar or tzar emulation** on that project:
+    - **Run runtip() or runtop()**
 
 ###  Details of each step
 
