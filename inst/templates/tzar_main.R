@@ -27,7 +27,7 @@ runtip <- function ()
     emulation_scratch_file_path        = "~/tzar_emulation_scratch.yaml"
     tzar_jar_path                      = "~/D/rdv-framework-latest-work/tzar.jar"
 
-    copy_model_R_tzar_file             = TRUE
+    copy_model_R_tzar_file             = FALSE
     model_R_tzar_src_dir               = "/Users/bill/D/Projects/ProblemDifficulty/pkgs/bdpgxupaper/R"    #"."    #system.file("templates", package="bdpgxupaper")
     model_R_tzar_disguised_filename    = "model.R.tzar"
     overwrite_existing_model_R_dest    = TRUE

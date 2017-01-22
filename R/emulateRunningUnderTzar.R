@@ -445,7 +445,7 @@ run_tzar <-
                   copy_model_R_tzar_file             = FALSE,
                   model_R_tzar_src_dir               = ".",
                   model_R_tzar_disguised_filename    = "model.R.tzar",
-                  overwrite_existing_model_R_dest    = TRUE,
+                  overwrite_existing_model_R_dest    = FALSE,
                   required_model_R_filename_for_tzar = "model.R"
                   )
     {
