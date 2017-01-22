@@ -19,47 +19,77 @@ devtools::install_github ("langfob/tzar")
 The basic idea behind the emulator (for experienced tzar users)
 ---------------------------------------------------------------
 
-The basic idea is that running tzar with an empty model.R produces all the same setup as running with a model.R that calls your applciation code. Consequently, you could run tzar with an empty model.R, go look for the most recent directory that tzar had created, then load the parameters.R file from that directory. At that point, you could run your own application code with the newly loaded parameters list and it would be nearly indistinguishable from running your code under tzar but you would have control of your code for debugging, etc.
+The basic idea is that running tzar with an empty model.R produces all the same setup as running with a model.R that calls your application code. Consequently, you could run tzar with an empty model.R, go look for the most recent directory that tzar had created, then load the parameters.R file from that directory. At that point, you could run your own application code with the newly loaded parameters list and it would be nearly indistinguishable from running your code under tzar but you would have control of your code for debugging, etc.
 
 The emulator just automatically manages the finding, loading, and running for you. It also manages a few other details of directory naming to indicate that a job ran and/or failed under emulation.To use the emulator, you just have to add a call to one of the emulator's functions in your model.R and another one in your application code.
 
-<table style="width:83%;">
-<colgroup>
-<col width="83%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td align="left">## SUMMARY: User steps required to enable tzar emulation</td>
-</tr>
-<tr class="even">
-<td align="left">For each project that uses tzar emulation, you will need to do the steps below, once at the start of the project. There are a few of these steps but they are all pretty simple. - The reason for all this is that the whole process is a complete hack aimed at deceiving tzar into doing what we want. There has been talk of adding a &quot;dry run&quot; option to tzar to properly do what this hack does, but so far, it's just talk. In the meantime, this hack works.</td>
-</tr>
-<tr class="odd">
-<td align="left">### Main steps - The main setup steps are: - Copy the <em>tzar_main</em> and <em>model</em> template files from the tzar package - Edit the <em>model</em> template if necessary - Edit the <em>tzar_main</em> template to match your project's directories, etc. - Make sure that the <strong>tzar package is loaded</strong>. - Make sure that you have a <strong>project.yaml file in the projectPath directory</strong>. - Run <em>runttip()</em> or <em>runtop()</em> each time you want to run tzar</td>
-</tr>
-<tr class="even">
-<td align="left">### Details of each step</td>
-</tr>
-<tr class="odd">
-<td align="left">- <strong>Copy the R template files</strong> from the package into the R source code area where you want to work. - In the code below, replace <em>YOUR_R_WORKING_AREA</em> with the location of the R code for your project. - Also, note that <em>get_tzar_R_templates()</em> has two arguments that you can modify if you need to, i.e., the target directory and a flag indicating whether model.R should be renamed to model.R.tzar or left as model.R. It never hurts to leave the</td>
-</tr>
-<tr class="even">
-<td align="left"><code>r library (tzar) get_tzar_R_templates (&quot;YOUR_R_WORKING_AREA&quot;)</code></td>
-</tr>
-<tr class="odd">
-<td align="left">- <strong>Edit model.R (or model.R.tzar if that's what was copied in)</strong> - <strong>Load your package</strong> in model.R if building a package - Uncomment &quot;#library (YOUR_PKG_NAME)&quot; - Replace YOUR_PKG_NAME with the name of your package - <strong>Set the following arguments</strong> of the function called <strong>in model.R</strong> if their default values are not appropriate for your project. In most cases, you shouldn't need to change their default values, particularly when you are first learning how to use tzar emulation. - main_function - projectPath - emulation_scratch_file_path</td>
-</tr>
-<tr class="even">
-<td align="left">- <strong>Edit tzar_main.R</strong> - <strong>Replace the dummy code in the tzar_main() function</strong> with code appropriate to your project. - For the first test of using tzar emulation in your project, you probably want o just leave the dummy code there and make sure that the tzar call works and echoes the values from the project.yaml file. - Subsequently, tzar_main() will probably just contain a single call to the main function of your project with the parameters list as the only argument. - <strong>Edit arguments to calls in runtip() and/or runtop()</strong> to match your project. - runtip() and runtop() are convenience functions to allow you to quickly run tzar emulation at the command line without having to constantly retype long lists of arguments that are nearly always the same within a given project. - runt<strong>i</strong>p() is the function for working INSIDE building a package - runt<strong>o</strong>p() is the function for working OUTSIDE building a package, i.e., when just doing normal R development. - If you're building a package, then you won't even need the runtop() function in that project so you can even delete or ignore the runt<strong>o</strong>p() function. - Similarly, if you're not building a package and expect to never try to turn the code you're working on into a package, then you won't need runt<strong>i</strong>p() and can delete or ignore it. - The arguments for runtip() and runtop() are listed below and are the same for both functions. Bold arguments are the ones whose default values probably need to be replaced. The others can be modified but probably don't need to be: - emulating_tzar - main_function - <strong>project_path</strong> (e.g., &quot;~/mypkg/R&quot;) - emulation_scratch_file_path - <strong>tzar_jar_path</strong> (e.g., &quot;~/myTzarJarDir/tzar.jar&quot;) - copy_model_R_tzar_file - model_R_tzar_src_dir - model_R_tzar_disguised_filename - overwrite_existing_model_R_dest - If you're inexperienced with the emulator, it's best to leave this set to the default value of FALSE. Details about this flag are given in a separate note below. - required_model_R_filename_for_tzar</td>
-</tr>
-<tr class="odd">
-<td align="left">- Make sure that the <strong>tzar package is loaded</strong> for your code, e.g., &quot;library(tzar)&quot;.</td>
-</tr>
-<tr class="even">
-<td align="left">- Make sure that you have a <strong>project.yaml file in the projectPath directory</strong>. - This is a tzar requirement and not specific to tzar emulation. - <strong>When running emulation</strong> rather than normal tzar, make sure that the <strong>project.yaml file is only doing a single run</strong> rather than using tzar's ability to generate lots of runs (e.g., with a repetitions section). - If you were to generate multiple runs, there would be ambiguity because there would be more than one place to look for the parameters.R file that tzar generates.</td>
-</tr>
-</tbody>
-</table>
+------------------------------------------------------------------------
+
+SUMMARY: User steps required to enable tzar emulation
+-----------------------------------------------------
+
+For each project that uses tzar emulation, you will need to do the steps below, once at the start of the project. There are a few of these steps but they are all pretty simple.
+- The reason for all this is that the whole process is a complete hack aimed at deceiving tzar into doing what we want. There has been talk of adding a "dry run" option to tzar to properly do what this hack does, but so far, it's just talk. In the meantime, this hack works.
+
+### Main steps
+
+-   The main setup steps are:
+    -   Copy the *tzar\_main* and *model* template files from the tzar package
+    -   Edit the *model* template if necessary
+    -   Edit the *tzar\_main* template to match your project's directories, etc.
+    -   Make sure that the **tzar package is loaded**.
+    -   Make sure that you have a **project.yaml file in the projectPath directory**.
+-   Run *runttip()* or *runtop()* each time you want to run tzar
+
+### Details of each step
+
+-   **Copy the R template files** from the package into the R source code area where you want to work.
+    -   In the code below, replace *YOUR\_R\_WORKING\_AREA* with the location of the R code for your project.
+    -   Also, note that *get\_tzar\_R\_templates()* has two arguments that you can modify if you need to, i.e., the target directory and a flag indicating whether model.R should be renamed to model.R.tzar or left as model.R. It never hurts to leave the
+
+``` r
+library (tzar)
+get_tzar_R_templates ("YOUR_R_WORKING_AREA")
+```
+
+-   **Edit model.R (or model.R.tzar if that's what was copied in)**
+    -   **Load your package** in model.R if building a package
+        -   Uncomment "\#library (YOUR\_PKG\_NAME)"
+        -   Replace YOUR\_PKG\_NAME with the name of your package
+    -   **Set the following arguments** of the function called **in model.R** if their default values are not appropriate for your project. In most cases, you shouldn't need to change their default values, particularly when you are first learning how to use tzar emulation.
+        -   main\_function
+        -   projectPath
+        -   emulation\_scratch\_file\_path
+-   **Edit tzar\_main.R**
+    -   **Replace the dummy code in the tzar\_main() function** with code appropriate to your project.
+        -   For the first test of using tzar emulation in your project, you probably want o just leave the dummy code there and make sure that the tzar call works and echoes the values from the project.yaml file.
+        -   Subsequently, tzar\_main() will probably just contain a single call to the main function of your project with the parameters list as the only argument.
+    -   **Edit arguments to calls in runtip() and/or runtop()** to match your project.
+        -   runtip() and runtop() are convenience functions to allow you to quickly run tzar emulation at the command line without having to constantly retype long lists of arguments that are nearly always the same within a given project.
+            -   runt**i**p() is the function for working INSIDE building a package
+            -   runt**o**p() is the function for working OUTSIDE building a package, i.e., when just doing normal R development.
+            -   If you're building a package, then you won't even need the runtop() function in that project so you can even delete or ignore the runt**o**p() function.
+            -   Similarly, if you're not building a package and expect to never try to turn the code you're working on into a package, then you won't need runt**i**p() and can delete or ignore it.
+        -   The arguments for runtip() and runtop() are listed below and are the same for both functions. Bold arguments are the ones whose default values probably need to be replaced. The others can be modified but probably don't need to be:
+            -   emulating\_tzar
+            -   main\_function
+            -   **project\_path** (e.g., "~/mypkg/R")
+            -   emulation\_scratch\_file\_path
+            -   **tzar\_jar\_path** (e.g., "~/myTzarJarDir/tzar.jar")
+            -   copy\_model\_R\_tzar\_file
+            -   model\_R\_tzar\_src\_dir
+            -   model\_R\_tzar\_disguised\_filename
+            -   overwrite\_existing\_model\_R\_dest
+                -   If you're inexperienced with the emulator, it's best to leave this set to the default value of FALSE. Details about this flag are given in a separate note below.
+            -   required\_model\_R\_filename\_for\_tzar
+-   Make sure that the **tzar package is loaded** for your code, e.g., "library(tzar)".
+
+-   Make sure that you have a **project.yaml file in the projectPath directory**.
+    -   This is a tzar requirement and not specific to tzar emulation.
+    -   **When running emulation** rather than normal tzar, make sure that the **project.yaml file is only doing a single run** rather than using tzar's ability to generate lots of runs (e.g., with a repetitions section).
+        -   If you were to generate multiple runs, there would be ambiguity because there would be more than one place to look for the parameters.R file that tzar generates.
+
+------------------------------------------------------------------------
 
 #### Details about the *overwrite\_existing\_model\_R\_dest* in runtip() and runtop() calls
 
