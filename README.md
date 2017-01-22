@@ -81,8 +81,10 @@ get_tzar_R_templates ("YOUR_R_WORKING_AREA")
             -   overwrite\_existing\_model\_R\_dest
                 -   If you're inexperienced with the emulator, it's best to leave this set to the default value of FALSE. Details about this flag are given in a separate note below.
             -   required\_model\_R\_filename\_for\_tzar
--   Make sure that the **tzar package is loaded** for your code, e.g., "library(tzar)".
-
+-   Make sure that the **tzar package is loaded** for your code.
+    -   If just running normal R code, then including "library(tzar)" somewhere works.
+    -   If building a package, then you need to include tzar in your Suggests or Depends in your package's DESCRIPTION file.
+        -   If you're only using tzar while building the package and a user of your package would not use tzar, then it can just be in the Suggests instead of in the Depends.
 -   Make sure that you have a **project.yaml file in the projectPath directory**.
     -   This is a tzar requirement and not specific to tzar emulation.
     -   **When running emulation** rather than normal tzar, make sure that the **project.yaml file is only doing a single run** rather than using tzar's ability to generate lots of runs (e.g., with a repetitions section).
