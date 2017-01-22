@@ -36,7 +36,7 @@ For each project that uses tzar emulation, you will need to do the steps below, 
     -   Make sure that the ***tzar package* is loaded**.
     -   Make sure that you have a ***project.yaml* file in the projectPath directory**.
 -   **Each time you want to run tzar or tzar emulation** on that project:
-    -   **Call runtip() or runtop()**
+    -   **Call runtip() or runtop()** at command line
 
 ### Details of each step
 
@@ -87,6 +87,9 @@ get_tzar_R_templates ("YOUR_R_WORKING_AREA")
     -   This is a tzar requirement and not specific to tzar emulation.
     -   **When running emulation** rather than normal tzar, make sure that the **project.yaml file is only doing a single run** rather than using tzar's ability to generate lots of runs (e.g., with a repetitions section).
         -   If you were to generate multiple runs, there would be ambiguity because there would be more than one place to look for the parameters.R file that tzar generates.
+-   After all of that setup is done, each time you want to do a run of your application code under tzar or tzar emulation:
+    -   Call runtip() at the R command prompt if you're running as part of developing a package
+    -   Call runtop() at the R command prompt if you're running normal R code that is outside of developing a package.
 
 ------------------------------------------------------------------------
 
