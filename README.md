@@ -52,7 +52,7 @@ get_tzar_R_templates ("YOUR_R_WORKING_AREA")
 ```
 
 -   **Edit model.R (or model.R.tzar if that's what was copied in)**
-    -   **Load your package** in model.R if building a package
+    -   If building a package, **load your package** in model.R
         -   Uncomment "\#library (YOUR\_PKG\_NAME)"
         -   Replace YOUR\_PKG\_NAME with the name of your package
     -   **Set the following arguments** of the function called **in model.R** if their default values are not appropriate for your project. In most cases, you shouldn't need to change their default values, particularly when you are first learning how to use tzar emulation.
@@ -61,7 +61,7 @@ get_tzar_R_templates ("YOUR_R_WORKING_AREA")
         -   emulation\_scratch\_file\_path
 -   **Edit tzar\_main.R**
     -   **Replace the dummy code in the tzar\_main() function** with code appropriate to your project.
-        -   For the first test of using tzar emulation in your project, you probably want o just leave the dummy code there and make sure that the tzar call works and echoes the values from the project.yaml file.
+        -   For the first test of using tzar emulation in your project, you probably want to just leave the dummy code there and make sure that the tzar call works and echoes the values from the project.yaml file.
         -   Subsequently, tzar\_main() will probably just contain a single call to the main function of your project with the parameters list as the only argument.
     -   **Edit arguments to calls in runtip() and/or runtop()** to match your project.
         -   runtip() and runtop() are convenience functions to allow you to quickly run tzar emulation at the command line without having to constantly retype long lists of arguments that are nearly always the same within a given project.
