@@ -30,14 +30,13 @@ devtools::install_github ("langfob/tzar")
 
 The basic idea is that running tzar with an empty model.R produces all the same setup as running with a model.R that calls your application code.  Consequently, you could run tzar with an empty model.R, go look for the most recent directory that tzar had created, then load the parameters.R file from that directory.  At that point, you could run your own application code with the newly loaded parameters list and it would be nearly indistinguishable from running your code under tzar but you would have control of your code for debugging, etc.  The emulator just automatically manages the finding, loading, and running for you.  It also manages a few other details of directory naming to indicate that a job ran and/or failed under emulation.
 
-------------------------------------------------------------  
-
 ##  SUMMARY:  User steps required to enable tzar emulation
 
 For each project that uses tzar emulation, you will need to do the steps below, once at the start of the project. There are a few of these steps but they are all pretty simple.  
 - The reason for all this is that the whole process is a complete hack aimed at deceiving tzar into doing what we want.  There has been talk of adding a "dry run" option to tzar to properly do what this hack does, but so far, it's just talk.  In the meantime, this hack works.
 
-###  Main steps
+###  The basic idea
+
 - **Once for each project** where you want to use tzar emulation:
     - **Copy the *tzar_main* and *model* template files** from the tzar package
     - **Edit the *model* template** if necessary
