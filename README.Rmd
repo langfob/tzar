@@ -44,7 +44,7 @@ For each project that uses tzar emulation, you will need to do the steps below, 
     - Make sure that the **_tzar package_ is loaded**.
     - Make sure that you have a **_project.yaml_ file in the projectPath directory**.   
 - **Each time you want to run tzar or tzar emulation** on that project:
-    - **Run runtip() or runtop()**
+    - **Call runtip() or runtop()**
 
 ###  Details of each step
 
