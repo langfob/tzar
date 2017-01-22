@@ -298,7 +298,7 @@ emulateRunningTzar = function (project_path,
 
     parameters$tzarEmulation_scratchFileName = tzarEmulation_scratchFileName
 
-    return (parameters)
+    return (invisible (parameters))
     }
 
 #-------------------------------------------------------------------------------
@@ -534,7 +534,7 @@ run_tzar <-
 
     file.remove (emulation_scratch_file_path)    # parameters$tzarEmulation_scratchFileName)
 
-    return (parameters)
+    return (invisible (parameters))
     }
 
 #===============================================================================
