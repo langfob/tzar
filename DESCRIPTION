@@ -6,7 +6,6 @@ Description: This package contains the R code required for emulating running
     the tzar code-running tool so that you get the tzar setup, file naming, 
     and parameterfile building without fully running tzar.
 Depends:
-    R (>= 3.3.2)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
