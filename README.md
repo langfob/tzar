@@ -16,6 +16,11 @@ You can install the R package for running tzar from within R using the following
 devtools::install_github ("langfob/tzar")
 ```
 
+Debugging
+---------
+
+No matter what problem you're having while using tzar emulation, look first to see if R/model.R exists. If it does, then delete it and retry whatever you're doing (e.g., running runtip() or doing a Build, etc.) The presence of model.R (instead of having it built automatically from model.R.tzar) seems to cause all kinds of strange errors whose messages make no mention at all of model.R and lead you astray.
+
 The basic idea behind the emulator (for experienced tzar users)
 ---------------------------------------------------------------
 
