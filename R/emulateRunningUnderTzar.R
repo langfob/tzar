@@ -396,6 +396,41 @@ try_to_write_model_R_file_to_work_area <-
 
 #' Run a function under normal tzar or tzar emulation
 #'
+#' If you're building a package rather than writing freestanding
+#' R code, R will execute all ".R" files in the package's R directory
+#' every time the package is built.  This is a problem when using tzar
+#' because tzar expects to find and run a file called model.R in the
+#' directory with all the other R code for the project.  If the code
+#' that builds the package finds that file, it will try to run the code in
+#' model.R and there will be code not encapsulated in a function and
+#' the builder will blow up when it runs that code.  For example,
+#' you might need one or more library() calls in model.R and these
+#' are not supposed to be executed inside package code.
+#'
+#' The way that run_tzar() is going to fake around this is to allow
+#' you to to create a model.R by copying the code from some other
+#' file into a file called model.R at the time tzar is run and then
+#' remove it after tzar finishes.  This behavior is primarily
+#' controlled by the boolean argument "copy_model_R_tzar_file".
+#' If that flag is TRUE, then run_tzar() will look at other
+#' arguments to the function to determine source and destination
+#' locations and file names and take care of the copying and cleaning
+#' up after the run.
+#'
+#' If you are working on your project outside of building a package,
+#' then it's not a problem to have the model.R code in the same
+#' directory as your other R code that tzar expects to run for the
+#' project.  In that case, just set the "copy_model_R_tzar_file" to
+#' FALSE and all the other arguments related to it will be ignored.
+#'
+#' NOTE:  Leaving the copying flag turned on does NOT hurt runs
+#'        done outside of building a package, so it's recommended
+#'        to just leave it turned on and put the code you would
+#'        normally put in model.R in model.R.tzar instead and then
+#'        let the run_tzar() manage all of that.  This way, you
+#'        can use the emulator with the least amount of installation
+#'        and management work for you when using the tzar package.
+
 #' @param emulating_tzar boolean with TRUE indicating main_function should be
 #' run under tzar emulation and FALSE indicating run under normal tzar
 #' @param main_function  function to call to run under tzar or tzar emulation
@@ -459,41 +494,6 @@ run_tzar <-
                                                  mustWork=FALSE)
     set_emulating_tzar_in_scratch_file (emulating_tzar,
                                        emulation_scratch_file_path)
-
-        #  If you're working inside a package rather than as freestanding
-        #  R code, R will execute all ".R" files in the package's R directory
-        #  every time the package is built.  This is a problem when using tzar
-        #  because tzar expects to find and run a file called model.R in the
-        #  directory with all the other R code for the project.  If the
-        #  package builder finds that file, it will try to run the code in
-        #  model.R and there will be code not encapsulated in a function and
-        #  the builder will blow up when it runs that code.  For example,
-        #  you might need one or more library() calls in model.R and these
-        #  are not supposed to be executed inside package code.
-        #
-        #  The way that run_tzar() is going to fake around this is to allow
-        #  you to to create a model.R by copying the code from some other
-        #  file into a file called model.R at the time tzar is run and then
-        #  remove it after tzar finishes.  This behavior is primarily
-        #  controlled by the boolean argument "copy_model_R_tzar_file".
-        #  If that flag is TRUE, then run_tzar() will look at other
-        #  arguments to the function to determine source and destination
-        #  locations and file names and take care of the copying and cleaning
-        #  up after the run.
-        #
-        #  If you are working on your project outside of building a package,
-        #  then it's not a problem to have the model.R code in the same
-        #  directory as your other R code that tzar expects to run for the
-        #  project.  In that case, just set the "copy_model_R_tzar_file" to
-        #  FALSE and all the other arguments related to it will be ignored.
-        #
-        #  NOTE:  Leaving the copying flag turned on does NOT hurt runs
-        #         done outside of building a package, so it's recommended
-        #         to just leave it turned on and put the code you would
-        #         normally put in model.R in model.R.tzar instead and then
-        #         let the run_tzar() manage all of that.  This way, you
-        #         can use the emulator with the least amount of installation
-        #         and management work for you when using the tzar package.
 
     if (copy_model_R_tzar_file)
         {

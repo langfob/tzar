@@ -31,4 +31,3 @@ model_with_possible_tzar_emulation (parameters,
                                    )
 }
 }
-

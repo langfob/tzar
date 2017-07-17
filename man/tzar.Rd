@@ -24,4 +24,3 @@ also be found in the vignette, which can be accessed by typing
 The tzar code-running tool itself is documented at and downloadable from:
 \url{https://tzar-framework.atlassian.net/wiki/display/TD/Tzar+documentation}
 }
-
