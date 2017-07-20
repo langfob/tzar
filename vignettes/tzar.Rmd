@@ -2,6 +2,7 @@
 title: "How tzar emulation works"
 author: "Bill Langford"
 date: "`r Sys.Date()`"
+#output: rmarkdown::pdf_document
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
@@ -45,7 +46,7 @@ print_x (parameters)
 
 Suppose that the project.yaml file contains:
 
-```{yaml eval=FALSE}
+```{r, eval=FALSE}
 project_name: simple_program
 runner_class: RRunner
 

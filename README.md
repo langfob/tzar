@@ -6,6 +6,8 @@ This package encapsulates R-related code for using the tzar code-running tool to
 
 The code in the tzar R package is primarily the R code required for emulating running tzar so that you get the tzar setup, file naming, and parameter file building without fully running tzar. This allows you to run your code inside of R or RStudio in a way that allows you to do debugging, which is difficult or impossible to do when tzar has control of the entire process, e.g., on a remote machine.
 
+Note that in the explanations below, there are quite a few small things that you have to pay attention to, but they are primarily things that you do one time for your project and after that, everything happens behind the scenes. Your use of tzar emulation is then reduced to a single call such as `runtip()` or `runtop()`. Those functions are explained below.
+
 Installation
 ------------
 
@@ -19,7 +21,44 @@ devtools::install_github ("langfob/tzar")
 Debugging
 ---------
 
+#### model.R
+
 No matter what problem you're having while using tzar emulation, look first to see if R/model.R exists. If it does, then delete it and retry whatever you're doing (e.g., running runtip() or doing a Build, etc.) The presence of model.R (instead of having it built automatically from model.R.tzar) seems to cause all kinds of strange errors whose messages make no mention at all of model.R and lead you astray.
+
+#### No repetitions - Only single model runs are allowed under emulation
+
+The emulator only allows single runs of the model because it's giving control back to the single R process that called it. You should not have multiple repetitions invoked in a tzar yaml file's *repetitions* section during emulation.
+
+runtip() and runtop() and run\_tzar()
+-------------------------------------
+
+run\_tzar() is the function that you call to do the work of running your code under tzar emulation, however, it's generally easier to do it using one of the two helper functions, runtip() and runtop(). Here's why as well as an explanation of which of those two to choose.
+
+#### runtip() and tzar emulation inside a package
+
+When tzar runs, it needs to find and run a file called model.R and that file is where you have some or all of your program's code or make calls to elements of that code. The only problem with this is that if you are building a package, R runs every ".R" file in the R directory of the package, including "model.R". Since that code runs a model, you don't want it to be called when R is building a package (e.g., when/if CRAN is building your package).
+
+One way to get around this is to rename model.R to something else and then copy that file into a new model.R when tzar emulation is run. That is what the function runtip() does. First it does the copy and then it calls run\_tzar() for you with the appropriate arguments. "runtip" stands for "run tzar emulation inside a package".
+
+Because there are various parts of this process that are specific to your program, runtip() is provided as a template that you must modify. The template code is in the file inst/templates/tzar\_main.R. You copy that file into your R area and modify that copy of the file to fit your project. That file will then be the one that is run by R when it builds the package.
+
+#### runtop() and tzar emulation outside a package
+
+If you are not building a package (and therefore, R is not automatically running every ".R" file in your code directory), then you don't have to worry about renaming the "model.R" file to hide it. Instead, you can have your model.R file in with your other R code and you can run tzar emulation by calling run\_top() instead of run\_tip(). The runtop() function is also templated in the inst/templates/tzar\_main.R file and you need to modify it in the copy of tzar\_main.R inside your R code directory just as you would have modified the runtip() function. Similarly, you could just use run\_tzar() directly if you prefer. runtop() is just a convenience function.
+
+#### Running tzar without emulation
+
+Once you have your code ready to a point where you no longer want to run emulation, then you no longer run runtip() or runtop() or run\_tzar(). You just run tzar with the usual tzar command line invocation under java.
+
+Simple example
+--------------
+
+After you have edited the runtip() and/or runtop() functions for your program and loaded whatever libraries you need for your program, you just call runtip() or runtop().
+
+``` r
+library (someLibrary)
+runtip()
+```
 
 The basic idea behind the emulator (for experienced tzar users)
 ---------------------------------------------------------------
