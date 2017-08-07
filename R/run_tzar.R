@@ -43,42 +43,47 @@
 #'        can use the emulator with the least amount of installation
 #'        and management work for you when using the tzar package.
 
-#' @param emulating_tzar boolean with TRUE indicating main_function should be
-#' run under tzar emulation and FALSE indicating run under normal tzar
-#' @param main_function  function to call to run under tzar or tzar emulation
-#' (NOTE: NOT a string), i.e., your main application code
-#' @param project_path path of R code and project.yaml file for project
-#' @param emulation_scratch_file_path path of scratch file for passing
-#' tzarEmulation flag and tzarOutputDir between tzar and mainline function
-#' @param tzar_jar_path Path to the jar file to use to run tzar
+#' @param parameters_yaml_file_path Full path with file name for the
+#' project.yaml file
 #'
-#' @param copy_model_dot_R_tzar_file Boolean flag indicating whether model.R must
-#' be copied in (e.g., when running inside a package)
-#' @param model_dot_R_tzar_SRC_dir Path to directory holding the model.R file to
-#' use to run tzar
-#' @param model_dot_R_tzar_disguised_filename Name (without path) of the file
-#' containing the code to be run by tzar as model.R
-#' @param overwrite_existing_model_dot_R_dest Boolean flag indicating whether
-#' model.R being copied in should overwrite any existing model.R in destination
-#' @param required_model_dot_R_filename_for_tzar Name of file that tzar expects to
-#' find and execute to call user's application code from tzar (currently,
-#' it's always "model.R")
+## @param emulating_tzar boolean with TRUE indicating main_function should be
+## run under tzar emulation and FALSE indicating run under normal tzar
+## @param main_function  function to call to run under tzar or tzar emulation
+## (NOTE: NOT a string), i.e., your main application code
+## @param project_path path of R code and project.yaml file for project
+## @param emulation_scratch_file_path path of scratch file for passing
+## tzarEmulation flag and tzarOutputDir between tzar and mainline function
+## @param tzar_jar_path Path to the jar file to use to run tzar
+##
+## @param copy_model_dot_R_tzar_file Boolean flag indicating whether model.R must
+## be copied in (e.g., when running inside a package)
+## @param model_dot_R_tzar_SRC_dir Path to directory holding the model.R file to
+## use to run tzar
+## @param model_dot_R_tzar_disguised_filename Name (without path) of the file
+## containing the code to be run by tzar as model.R
+## @param overwrite_existing_model_dot_R_dest Boolean flag indicating whether
+## model.R being copied in should overwrite any existing model.R in destination
+## @param required_model_dot_R_filename_for_tzar Name of file that tzar expects to
+## find and execute to call user's application code from tzar (currently,
+## it's always "model.R")
 #'
 #' @return parameters list of parameters loaded from project.yaml file
 #' @export
 #'
 #' @examples \dontrun{
 #' run_tzar (
-#'          emulating_tzar              = TRUE,
-#'          main_function               = trial_main_function,
-#'          project_path                = ".",
-#'          emulation_scratch_file_path = "~/tzar_emulation_scratch.yaml",
-#'          tzar_jar_path               = "~/D/rdv-framework-latest-work/tzar.jar",
-#'          copy_model_dot_R_tzar_file             = FALSE,
-#'          model_dot_R_tzar_src_dir               = model_dot_R_tzar_src_dir,
-#'          model_dot_R_tzar_disguised_filename    = "model.R.tzar",
-#'          overwrite_existing_model_dot_R_dest    = TRUE,
-#'          required_model_dot_R_filename_for_tzar = "model.R"
+#'          parameters_yaml_file_path              = "./project.yaml"
+#'
+##          emulating_tzar              = TRUE,
+##          main_function               = trial_main_function,
+##          project_path                = ".",
+##          emulation_scratch_file_path = "~/tzar_emulation_scratch.yaml",
+##          tzar_jar_path               = "~/D/rdv-framework-latest-work/tzar.jar",
+##          copy_model_dot_R_tzar_file             = FALSE,
+##          model_dot_R_tzar_src_dir               = model_dot_R_tzar_src_dir,
+##          model_dot_R_tzar_disguised_filename    = "model.R.tzar",
+##          overwrite_existing_model_dot_R_dest    = TRUE,
+##          required_model_dot_R_filename_for_tzar = "model.R"
 #'          )
 #'}
 
