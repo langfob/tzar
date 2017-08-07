@@ -54,7 +54,7 @@
 #'
 #' @param copy_model_dot_R_tzar_file Boolean flag indicating whether model.R must
 #' be copied in (e.g., when running inside a package)
-#' @param model_dot_R_tzar_src_dir Path to directory holding the model.R file to
+#' @param model_dot_R_tzar_SRC_dir Path to directory holding the model.R file to
 #' use to run tzar
 #' @param model_dot_R_tzar_disguised_filename Name (without path) of the file
 #' containing the code to be run by tzar as model.R
@@ -140,13 +140,13 @@ run_tzar <- function (parameters_yaml_file_path = "./project.yaml")
             #----------------------------------------------------------------
 
     if (emulating_tzar & copy_model_dot_R_tzar_file)
-            full_model_dot_R_dest_path =
+            full_model_dot_R_DEST_path =
                     copy_model_dot_R_tzar_file_to_src_area (
-                                params$model_dot_R_tzar_src_dir,
+                                params$model_dot_R_tzar_SRC_dir,
                                 params$model_dot_R_tzar_disguised_filename,
                                 params$project_path,
                                 params$required_model_dot_R_filename_for_tzar,
-                                params$overwrite_existing_model_dot_R_dest)
+                                params$overwrite_existing_model_dot_R_DEST)
 
             #--------------------------------------------------------------------
             #  Ready to make the actual call to tzar from the command line now.
@@ -189,7 +189,7 @@ run_tzar <- function (parameters_yaml_file_path = "./project.yaml")
         clean_up_after_tzar_emulation (parameters$tzarInProgressDirName,
                                        parameters$tzarEmulationCompletedDirName,
                                        copy_model_dot_R_tzar_file,
-                                       full_model_dot_R_dest_path,
+                                       full_model_dot_R_DEST_path,
                                        emulation_scratch_file_path)
 
         } else

@@ -69,29 +69,29 @@ get_tzarOutputDir_from_scratch_file <- function (emulation_scratch_file_path)
 #===============================================================================
 
 try_to_write_model_dot_R_file_to_work_area <-
-                            function (full_model_dot_R_src_path,
-                                      full_model_dot_R_dest_path,
-                                      overwrite_existing_model_dot_R_dest = FALSE)
+                            function (full_model_dot_R_SRC_path,
+                                      full_model_dot_R_DEST_path,
+                                      overwrite_existing_model_dot_R_DEST = FALSE)
     {
-    if (file.exists (full_model_dot_R_src_path))
+    if (file.exists (full_model_dot_R_SRC_path))
         {
-        cat ("\n\nIn write_model_dot_R_file_to_work_area():  overwrite_existing_model_dot_R_dest = '",
-             overwrite_existing_model_dot_R_dest, "'\n", sep='')
+        cat ("\n\nIn write_model_dot_R_file_to_work_area():  overwrite_existing_model_dot_R_DEST = '",
+             overwrite_existing_model_dot_R_DEST, "'\n", sep='')
 
-        if (!overwrite_existing_model_dot_R_dest & file.exists (full_model_dot_R_dest_path))
+        if (!overwrite_existing_model_dot_R_DEST & file.exists (full_model_dot_R_DEST_path))
             {
-            stop (paste0 ("\nIn write_model_dot_R_file_to_work_area:  full_model_dot_R_dest_path = '",
-                          full_model_dot_R_dest_path, "' either exists.\n\n"))
+            stop (paste0 ("\nIn write_model_dot_R_file_to_work_area:  full_model_dot_R_DEST_path = '",
+                          full_model_dot_R_DEST_path, "' either exists.\n\n"))
 
-            } else  #  dest exists but we're allowed to overwrite it
+            } else  #  DEST exists but we're allowed to overwrite it
             {
-            file.copy (full_model_dot_R_src_path, full_model_dot_R_dest_path,
+            file.copy (full_model_dot_R_SRC_path, full_model_dot_R_DEST_path,
                        overwrite = TRUE)
             }
         } else
         {
-        stop (paste0 ("\nIn write_model_dot_R_file_to_work_area:  full_model_dot_R_src_path = '",
-                      full_model_dot_R_src_path, "' does not exist.\n\n"))
+        stop (paste0 ("\nIn write_model_dot_R_file_to_work_area:  full_model_dot_R_SRC_path = '",
+                      full_model_dot_R_SRC_path, "' does not exist.\n\n"))
         }
     }
 
@@ -123,7 +123,7 @@ try_to_write_model_dot_R_file_to_work_area <-
 clean_up_after_tzar_emulation = function (tzarInProgressDirName,
                                           tzarEmulationCompletedDirName,
                                           copy_model_dot_R_tzar_file,
-                                          full_model_dot_R_dest_path,
+                                          full_model_dot_R_DEST_path,
                                           emulation_scratch_file_path)
     {
     file.rename (tzarInProgressDirName, tzarEmulationCompletedDirName)
@@ -131,7 +131,7 @@ clean_up_after_tzar_emulation = function (tzarInProgressDirName,
     cat ("\n\nFinal tzar output is in:\n    '", tzarEmulationCompletedDirName,
          "'\n\n", sep='')
 
-    if (copy_model_dot_R_tzar_file)  file.remove (full_model_dot_R_dest_path)
+    if (copy_model_dot_R_tzar_file)  file.remove (full_model_dot_R_DEST_path)
 
     file.remove (emulation_scratch_file_path)
     }
@@ -147,25 +147,25 @@ clean_up_after_tzar_emulation = function (tzarInProgressDirName,
         #  declarations and so, will cause the build to fail).
         #----------------------------------------------------------------------
 
-copy_model_dot_R_tzar_file_to_src_area <- function (model_dot_R_tzar_src_dir,
+copy_model_dot_R_tzar_file_to_src_area <- function (model_dot_R_tzar_SRC_dir,
                                                 model_dot_R_tzar_disguised_filename,
                                                 project_path,
                                                 required_model_dot_R_filename_for_tzar,
-                                                overwrite_existing_model_dot_R_dest)
+                                                overwrite_existing_model_dot_R_DEST)
     {
-    full_model_dot_R_src_path =
-      normalizePath (file.path (model_dot_R_tzar_src_dir,
+    full_model_dot_R_SRC_path =
+      normalizePath (file.path (model_dot_R_tzar_SRC_dir,
                                 model_dot_R_tzar_disguised_filename))
-    full_model_dot_R_dest_path =
+    full_model_dot_R_DEST_path =
       normalizePath (file.path (project_path,
                                 required_model_dot_R_filename_for_tzar),
                      mustWork=FALSE)
 
-    try_to_write_model_dot_R_file_to_work_area (full_model_dot_R_src_path,
-                                            full_model_dot_R_dest_path,
-                                            overwrite_existing_model_dot_R_dest)
+    try_to_write_model_dot_R_file_to_work_area (full_model_dot_R_SRC_path,
+                                            full_model_dot_R_DEST_path,
+                                            overwrite_existing_model_dot_R_DEST)
 
-    return (full_model_dot_R_dest_path)
+    return (full_model_dot_R_DEST_path)
     }
 
 #===============================================================================
