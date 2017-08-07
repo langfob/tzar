@@ -4,17 +4,12 @@
 \alias{model_with_possible_tzar_emulation}
 \title{model.R code for tzar or tzar emulation}
 \usage{
-model_with_possible_tzar_emulation(parameters, main_function, projectPath,
-  emulation_scratch_file_path)
+model_with_possible_tzar_emulation(parameters, main_function)
 }
 \arguments{
 \item{parameters}{list of parameters built by tzar from project.yaml}
 
 \item{main_function}{name of function to call to run under tzar or tzar emulation}
-
-\item{projectPath}{path of R code and project.yaml file for project}
-
-\item{emulation_scratch_file_path}{path of scratch file for passing tzarEmulation flag and tzarOutputDir between tzar and mainline function}
 }
 \value{
 parameters list of parameters loaded from project.yaml file
