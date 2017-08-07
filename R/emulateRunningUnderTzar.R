@@ -4,9 +4,9 @@
 
 #===============================================================================
 
-emulateRunningTzar = function (project_path,
-                               tzarEmulation_scratchFileName
-                               )
+emulate_running_tzar = function (project_path,
+                                 tzarEmulation_scratchFileName
+                                 )
     {
         #-----------------------------------------------------------------------
         #  Probably never need to change these...
