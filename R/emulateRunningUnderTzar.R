@@ -4,18 +4,19 @@
 
 #===============================================================================
 
-emulate_running_tzar = function (project_path,
-                                 tzar_emulation_scratch_file_name
+emulate_running_tzar <- function (
+    project_path,
+    tzar_emulation_scratch_file_name,
+    tzar_parameters_src_file_name          = "parameters.R",
+    tzar_emulation_completed_dir_extension = ".completedTzarEmulation",
+    tzar_in_progress_extension             = ".inprogress/",
+    tzar_finished_extension                = ""
                                  )
     {
         #-----------------------------------------------------------------------
         #  Probably never need to change these...
         #-----------------------------------------------------------------------
 
-    tzar_parameters_src_file_name          = "parameters.R"
-    tzar_emulation_completed_dir_extension = ".completedTzarEmulation"
-    tzar_in_progress_extension             = ".inprogress/"
-    tzar_finished_extension                = ""
 
         #-----------------------------------------------------------------------
         #  Need to set these variables just once, i.e., at start of a new project.
