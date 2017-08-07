@@ -17,15 +17,15 @@
 
 run_tzar_java_jar <- function (tzar_jar_path, project_path)
     {
-    tzarCmd = paste ("-jar", tzar_jar_path, "execlocalruns", project_path)
+    tzar_cmd = paste ("-jar", tzar_jar_path, "execlocalruns", project_path)
     current.os = utils::sessionInfo()$R.version$os
 
     if (current.os == 'mingw32')
         {
-        tzarsim.exit.code = system (paste0 ('java ', tzarCmd))
+        tzarsim.exit.code = system (paste0 ('java ', tzar_cmd))
         } else
         {
-        tzarsim.exit.code = system2 ('java', tzarCmd, env="DISPLAY=:1")
+        tzarsim.exit.code = system2 ('java', tzar_cmd, env="DISPLAY=:1")
         }
     }
 
@@ -48,11 +48,11 @@ as_boolean <- function (value)
 
 #===============================================================================
 
-set_tzar_output_dir_in_scratch_file <- function (tzarOutputDir,
+set_tzar_output_dir_in_scratch_file <- function (tzar_output_dir,
                                                  emulation_scratch_file_path)
     {
     scratch_file = file (emulation_scratch_file_path, "w")
-    cat ("tzarOutputDir: ", tzarOutputDir, "\n", file=scratch_file, sep='')
+    cat ("tzar_output_dir: ", tzar_output_dir, "\n", file=scratch_file, sep='')
     close (scratch_file)
     }
 
@@ -61,9 +61,9 @@ set_tzar_output_dir_in_scratch_file <- function (tzarOutputDir,
 get_tzar_output_dir_from_scratch_file <- function (emulation_scratch_file_path)
     {
     scratch_values = yaml::yaml.load_file (emulation_scratch_file_path)
-    tzarOutputDir = scratch_values$tzarOutputDir
+    tzar_output_dir = scratch_values$tzar_output_dir
 
-    return (tzarOutputDir)
+    return (tzar_output_dir)
     }
 
 #===============================================================================
@@ -120,15 +120,15 @@ try_to_write_model_dot_R_file_to_work_area <-
 #'  after the run is complete.  If those two things were happening,
 #'  then this cleanup code would be unnecessary.
 
-clean_up_after_tzar_emulation = function (tzarInProgressDirName,
-                                          tzarEmulationCompletedDirName,
+clean_up_after_tzar_emulation = function (tzar_in_progress_dir_name,
+                                          tzar_emulation_completed_dir_name,
                                           copy_model_dot_R_tzar_file,
                                           full_model_dot_R_DEST_path,
                                           emulation_scratch_file_path)
     {
-    file.rename (tzarInProgressDirName, tzarEmulationCompletedDirName)
+    file.rename (tzar_in_progress_dir_name, tzar_emulation_completed_dir_name)
 
-    cat ("\n\nFinal tzar output is in:\n    '", tzarEmulationCompletedDirName,
+    cat ("\n\nFinal tzar output is in:\n    '", tzar_emulation_completed_dir_name,
          "'\n\n", sep='')
 
     if (copy_model_dot_R_tzar_file)  file.remove (full_model_dot_R_DEST_path)
@@ -147,11 +147,12 @@ clean_up_after_tzar_emulation = function (tzarInProgressDirName,
         #  declarations and so, will cause the build to fail).
         #----------------------------------------------------------------------
 
-copy_model_dot_R_tzar_file_to_src_area <- function (model_dot_R_tzar_SRC_dir,
-                                                model_dot_R_tzar_disguised_filename,
-                                                project_path,
-                                                required_model_dot_R_filename_for_tzar,
-                                                overwrite_existing_model_dot_R_DEST)
+copy_model_dot_R_tzar_file_to_src_area <-
+                        function (model_dot_R_tzar_SRC_dir,
+                                    model_dot_R_tzar_disguised_filename,
+                                    project_path,
+                                    required_model_dot_R_filename_for_tzar,
+                                    overwrite_existing_model_dot_R_DEST)
     {
     full_model_dot_R_SRC_path =
       normalizePath (file.path (model_dot_R_tzar_SRC_dir,
@@ -175,7 +176,7 @@ copy_model_dot_R_tzar_file_to_src_area <- function (model_dot_R_tzar_SRC_dir,
 
 get_parameters <- function (project_path,
 #                            tzar_jar_path,
-                            tzarEmulation_scratchFileName,
+                            tzar_emulation_scratch_file_name,
                             emulating_tzar=FALSE
                             )
     {
@@ -193,7 +194,7 @@ get_parameters <- function (project_path,
 
         parameters = emulateRunningTzar (project_path,
 #                                         tzar_jar_path,
-                                         tzarEmulation_scratchFileName
+                                         tzar_emulation_scratch_file_name
                                          )
         }
 
