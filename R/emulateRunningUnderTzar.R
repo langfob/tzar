@@ -425,16 +425,14 @@ run_tzar <-
                   required_model_R_filename_for_tzar = "model.R"
                   )
     {
-        #  Make sure the path to the scratch file is in canonical form for
-        #  the platform in case there is any problem with it.
-        #  Set mustWork=FALSE because the file should not be there and
-        #  when a file is not there, normalizePath() gives a warning that
-        #  we don't want to see.
-
-    emulation_scratch_file_path = normalizePath (emulation_scratch_file_path,
-                                                 mustWork=FALSE)
-    set_emulating_tzar_in_scratch_file (emulating_tzar,
-                                       emulation_scratch_file_path)
+        #----------------------------------------------------------------------
+        #  If there is no model.R file in the source code area,
+        #  then copy the template model.R file into the area.
+        #  This is only necessary if doing tzar emulation from inside an R
+        #  package (because every ".R" file gets run during the package build
+        #  and model.R contains code other than function and variable
+        #  declarations and so, will cause the build to fail).
+        #----------------------------------------------------------------------
 
     if (copy_model_R_tzar_file)
         {
@@ -473,7 +471,29 @@ browser()
 
     if (emulating_tzar)
         {
-        cat ("\n\nIn run_tzar:  emulating running under tzar...")
+        cat ("\n\nIn run_tzar:  Finished running dummy EMULATION code under tzar.\n",
+             "              Ready to go back and run real code outside of tzar...")
+
+            #-------------------------------------------------------------------
+            #  Make sure the path to the scratch file is in canonical form for
+            #  the platform in case there is any problem with it.
+            #  Set mustWork=FALSE because the file should not be there and
+            #  when a file is not there, normalizePath() gives a warning that
+            #  we don't want to see.
+            #-------------------------------------------------------------------
+
+        emulation_scratch_file_path = normalizePath (emulation_scratch_file_path,
+                                                     mustWork=FALSE)
+
+###  Not necessary now that emulating_tzar is set in project.yaml?
+###  2017 08 06 - BTL.
+        set_emulating_tzar_in_scratch_file (emulating_tzar,
+                                            emulation_scratch_file_path)
+
+            #--------------------------------------------------------
+            #  Collect parameters set by tzar during the dummy run,
+            #  e.g., output directory location.
+            #--------------------------------------------------------
 
         parameters = emulateRunningTzar (project_path,
                                          emulation_scratch_file_path
