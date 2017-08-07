@@ -50,7 +50,7 @@ get_emulating_tzar_from_scratch_file <- function (emulation_scratch_file_path)
     return (emulating_tzar)
     }
 
-#-------------------------------------------------------------------------------
+#===============================================================================
 
 set_tzarOutputDir_in_scratch_file <- function (tzarOutputDir,
                                                emulation_scratch_file_path)
@@ -130,6 +130,36 @@ cleanUpAfterTzarEmulation = function (parameters)
     cat ("\n\nFinal tzar output is in:\n    '",
          parameters$tzarEmulationCompletedDirName,
          "'\n\n", sep='')
+    }
+
+#===============================================================================
+
+        #----------------------------------------------------------------------
+        #  If emulating tzar and there is no model.R file in the source code
+        #  area, copy the template model.R file into the area.
+        #  This is only necessary if doing tzar emulation from inside an R
+        #  package (because every ".R" file gets run during the package build
+        #  and model.R contains code other than function and variable
+        #  declarations and so, will cause the build to fail).
+        #----------------------------------------------------------------------
+
+copy_model_R_tzar_file_to_src_area <- function (model_R_tzar_src_dir,
+                                                model_R_tzar_disguised_filename,
+                                                project_path,
+                                                required_model_R_filename_for_tzar,
+                                                overwrite_existing_model_R_dest)
+    {
+    full_model_R_src_path =
+      normalizePath (file.path (model_R_tzar_src_dir,
+                                model_R_tzar_disguised_filename))
+    full_model_R_dest_path =
+      normalizePath (file.path (project_path,
+                                required_model_R_filename_for_tzar),
+                     mustWork=FALSE)
+
+    try_to_write_model_R_file_to_work_area (full_model_R_src_path,
+                                            full_model_R_dest_path,
+                                            overwrite_existing_model_R_dest)
     }
 
 #===============================================================================
