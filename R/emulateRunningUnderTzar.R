@@ -98,76 +98,6 @@ get_tzarOutputDir_from_scratch_file <- function (emulation_scratch_file_path)
 
 #===============================================================================
 
-#' get R template files for running tzar emulation
-#'
-#' This is a convenience function to run one time at the start of using tzar
-#' emulation on a project.  Tzar requires a model.R file and tzar emulation
-#' requires a file like tzar_main.R to call the user's application code.  The
-#' tzar package provides a template for each of these two files to make it as
-#' simple as possible to do emulation.
-#'
-#' One catch in using the templates is that when development is being done as
-#' part of building a package, the model.R file can't be called model.R. This is
-#' because when R builds a package, it runs all ".R" files in the package's R
-#' directory since they are assumed to do nothing but define functions.  Since
-#' model.R runs experiments instead of defining functions, this will not work
-#' inside a package build.  Tzar emulation gets around this by disguising the
-#' name of model.R as model.R.tzar and then renaming it to model.R just before a
-#' tzar run, then renaming it back to model.R.tzar after the emulation run.
-#'
-#' Note that if tzar emulation is to be done in a normal R programming situation
-#' that doesn't involve a package build, then it's fine for model.R to keep its
-#' name as is.
-#'
-#' @param target_dir Path of directory where template files are to be deposited
-#' @param running_inside_a_package Boolean flag set to TRUE if emulation will be
-#'   done inside a package build and FALSE otherwise
-#'
-#' @return NULL
-#' @export
-#'
-#' @examples \dontrun{
-#'     #  Copy template files to current directory for use in
-#'     #  developing a package.
-#' get_tzar_R_templates ()
-#'
-#'     #  Copy template files to R subdirectory for use in normal R development
-#'     #  outsides of a package.
-#' get_tzar_R_templates ("./R", FALSE)
-#' }
-get_tzar_R_templates <- function (target_dir = ".",
-                                  running_inside_a_package = TRUE)
-    {
-    target_dir = normalizePath (target_dir)
-
-    file.copy (system.file ("templates/tzar_main.R", package="tzar"),
-               target_dir)
-
-        #-----------------------------------------------------------------------
-        #  If model.R is to be part of a package, then it can't be named
-        #  model.R since the package builder will run it at build time as
-        #  part of running all ".R" files in the package's R directory.
-        #  So, in that case, the name model.R needs to be disguised to
-        #  not end in ".R".  We will arbitrarily choose to rename it with
-        #  ".tzar" tacked onto the end.
-        #  If not part of a package, then it's fine to have it called model.R.
-        #-----------------------------------------------------------------------
-
-    if (running_inside_a_package)
-        {
-        file.copy (system.file ("templates/model.R", package="tzar"),
-                   file.path (target_dir, "model.R.tzar"))
-        } else
-        {
-        file.copy (system.file ("templates/model.R", package="tzar"),
-                   target_dir)
-        }
-
-    return (NULL)
-    }
-
-#===============================================================================
-
 emulateRunningTzar = function (project_path,
                                tzarEmulation_scratchFileName
                                )
@@ -562,51 +492,6 @@ browser()
     file.remove (emulation_scratch_file_path)
 
     return (invisible (parameters))
-    }
-
-#===============================================================================
-
-#' Convenience function to call run_tzar() when code is not part of a package
-#'
-#' @param emulating_tzar boolean with TRUE indicating main_function should be
-#' run under tzar emulation and FALSE indicating run under normal tzar
-#' @param main_function  function to call to run under tzar or tzar emulation
-#' (NOTE: NOT a string), i.e., your main application code
-#' @param project_path path of R code and project.yaml file for project
-#' @param emulation_scratch_file_path path of scratch file for passing
-#' tzarEmulation flag and tzarOutputDir between tzar and mainline function
-#' @param tzar_jar_path Path to the jar file to use to run tzar
-#'
-#' @return parameters list of parameters loaded from project.yaml file
-#' @export
-#'
-#' @examples \dontrun{
-#' run_tzar (
-#'          emulating_tzar              = TRUE,
-#'          main_function               = trial_main_function,
-#'          project_path                = ".",
-#'          emulation_scratch_file_path = "~/tzar_emulation_scratch.yaml",
-#'          tzar_jar_path               = "~/D/rdv-framework-latest-work/tzar.jar"
-#'          )
-#'}
-
-run_tzar_outside_pkg <-
-        function (emulating_tzar,
-                  main_function,
-                  project_path,
-                  emulation_scratch_file_path,
-                  tzar_jar_path
-                  )
-    {
-    return (run_tzar (emulating_tzar                     = emulating_tzar,
-                      main_function                      = main_function,
-                      project_path                       = project_path,
-                      emulation_scratch_file_path        = emulation_scratch_file_path,
-                      tzar_jar_path                      = tzar_jar_path,
-
-                      copy_model_R_tzar_file             = FALSE
-                      )
-            )
     }
 
 #===============================================================================
