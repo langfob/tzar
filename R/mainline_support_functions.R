@@ -48,17 +48,17 @@ as_boolean <- function (value)
 
 #===============================================================================
 
-set_tzarOutputDir_in_scratch_file <- function (tzarOutputDir,
-                                               emulation_scratch_file_path)
+set_tzar_output_dir_in_scratch_file <- function (tzarOutputDir,
+                                                 emulation_scratch_file_path)
     {
     scratch_file = file (emulation_scratch_file_path, "w")
     cat ("tzarOutputDir: ", tzarOutputDir, "\n", file=scratch_file, sep='')
     close (scratch_file)
     }
 
-#-----------------------------------
+#-------------------------------------------------------------------------------
 
-get_tzarOutputDir_from_scratch_file <- function (emulation_scratch_file_path)
+get_tzar_output_dir_from_scratch_file <- function (emulation_scratch_file_path)
     {
     scratch_values = yaml::yaml.load_file (emulation_scratch_file_path)
     tzarOutputDir = scratch_values$tzarOutputDir

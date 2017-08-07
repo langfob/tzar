@@ -90,7 +90,7 @@ emulate_running_tzar <- function (
             #      "/Users/bill/tzar/outputdata/biodivprobgen/default_runset/827_default_scenario.inprogress/"
 #    tzar_in_progress_dir_name = readLines (tzar_emulation_scratch_file_name)
     tzar_in_progress_dir_name =
-            get_tzarOutputDir_from_scratch_file (tzar_emulation_scratch_file_name)
+            get_tzar_output_dir_from_scratch_file (tzar_emulation_scratch_file_name)
 
             #  Build the name of the directory that would result if tzar
             #  successfully ran to completion without emulation, e.g.,
