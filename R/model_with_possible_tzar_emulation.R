@@ -30,18 +30,19 @@ model_with_possible_tzar_emulation <- function (parameters,
                                                 emulation_scratch_file_path
                                                 )
     {
-    emulatingTzar =
-        get_emulating_tzar_from_scratch_file (emulation_scratch_file_path)
+    # emulatingTzar =
+    #     get_emulating_tzar_from_scratch_file (emulation_scratch_file_path)
+    emulating_tzar = as_boolean (parameters$emulatingTzar)
 
-    if (! emulatingTzar)
+    if (! emulating_tzar)
         {
-        cat ("\n\n=====>  In model.R: NOT EMULATING")
+        cat ("\n\n=====>  In model.R: NOT emulating tzar")
 
         main_function (parameters = parameters)
 
         } else                     #  EMULATING
         {
-        cat ("\n\n=====>  In model.R: emulatingTzar")
+        cat ("\n\n=====>  In model.R: EMULATING tzar")
 
         set_tzarOutputDir_in_scratch_file (parameters$fullOutputDirWithSlash,
                                            emulation_scratch_file_path)
