@@ -122,8 +122,21 @@ run_tzar <- function (parameters_yaml_file_path = "./project.yaml")
 
     params = yaml::yaml.load_file (parameters_yaml_file_path)
 
-    emulating_tzar = as_boolean (params$emulating_tzar)
-    copy_model_dot_R_tzar_file = as_boolean (params$copy_model_dot_R_tzar_file)
+    emulating_tzar              = as_boolean (params$emulating_tzar)
+    copy_model_dot_R_tzar_file  = as_boolean (params$copy_model_dot_R_tzar_file)
+
+    emulation_scratch_file_path = params$emulation_scratch_file_path
+    tzar_jar_path               = params$tzar_jar_path
+    project_path                = params$project_path
+
+    model_dot_R_tzar_SRC_dir =
+                        params$model_dot_R_tzar_SRC_dir
+    model_dot_R_tzar_disguised_filename =
+                        params$model_dot_R_tzar_disguised_filename
+    required_model_dot_R_filename_for_tzar =
+                        params$required_model_dot_R_filename_for_tzar
+    overwrite_existing_model_dot_R_DEST =
+                        as_boolean (params$overwrite_existing_model_dot_R_DEST)
 
             #---------------------------------------------------------------
             #  Get the full path to the emulation scratch file.
@@ -136,7 +149,7 @@ run_tzar <- function (parameters_yaml_file_path = "./project.yaml")
 
     if (emulating_tzar)
         emulation_scratch_file_path =
-            normalizePath (params$emulation_scratch_file_path,
+            normalizePath (emulation_scratch_file_path,
                            mustWork=FALSE)
 
             #----------------------------------------------------------------
@@ -147,11 +160,11 @@ run_tzar <- function (parameters_yaml_file_path = "./project.yaml")
     if (emulating_tzar & copy_model_dot_R_tzar_file)
             full_model_dot_R_DEST_path =
                     copy_model_dot_R_tzar_file_to_src_area (
-                                params$model_dot_R_tzar_SRC_dir,
-                                params$model_dot_R_tzar_disguised_filename,
-                                params$project_path,
-                                params$required_model_dot_R_filename_for_tzar,
-                                params$overwrite_existing_model_dot_R_DEST)
+                                        model_dot_R_tzar_SRC_dir,
+                                        model_dot_R_tzar_disguised_filename,
+                                        project_path,
+                                        required_model_dot_R_filename_for_tzar,
+                                        overwrite_existing_model_dot_R_DEST)
 
             #--------------------------------------------------------------------
             #  Ready to make the actual call to tzar from the command line now.
