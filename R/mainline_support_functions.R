@@ -31,23 +31,19 @@ run_tzar_java_jar <- function (tzar_jar_path, project_path)
 
 #===============================================================================
 
-set_emulating_tzar_in_scratch_file <- function (emulating_tzar,
-                                               emulation_scratch_file_path)
+#' Convert NULL values to FALSE and non-NULLs to their logical value
+#'
+#' The core function as.logical() crashes if you give it a NULL.
+#' This convenience function turns those NULLs into FALSE and preserves
+#' the same output as as.logical() for non-NULLs.
+#'
+#' It probably needs a bit more work to make it behave the same way as
+#' as.logical() does for vectors.  For the moment, this is just working
+#' on single values when they are NULL.
+
+as_boolean <- function (value)
     {
-    scratch_file = file (emulation_scratch_file_path, "w")
-    cat ("emulating_tzar: ", emulating_tzar, "\n", file=scratch_file, sep='')
-    close (scratch_file)
-    }
-
-#-----------------------------------
-
-get_emulating_tzar_from_scratch_file <- function (emulation_scratch_file_path)
-    {
-    scratch_values = yaml::yaml.load_file (emulation_scratch_file_path)
-
-    emulating_tzar = as.logical (scratch_values$emulating_tzar)
-
-    return (emulating_tzar)
+    if (is.null (params_value)) FALSE else as.logical (value)
     }
 
 #===============================================================================
@@ -72,64 +68,72 @@ get_tzarOutputDir_from_scratch_file <- function (emulation_scratch_file_path)
 
 #===============================================================================
 
-try_to_write_model_R_file_to_work_area <-
-                            function (full_model_R_src_path,
-                                      full_model_R_dest_path,
-                                      overwrite_existing_model_R_dest = TRUE)
+try_to_write_model_dot_R_file_to_work_area <-
+                            function (full_model_dot_R_src_path,
+                                      full_model_dot_R_dest_path,
+                                      overwrite_existing_model_dot_R_dest = FALSE)
     {
-    if (file.exists (full_model_R_src_path))
+    if (file.exists (full_model_dot_R_src_path))
         {
-        cat ("\n\nIn write_model_R_file_to_work_area():  overwrite_existing_model_R_dest = '",
-             overwrite_existing_model_R_dest, "'\n", sep='')
+        cat ("\n\nIn write_model_dot_R_file_to_work_area():  overwrite_existing_model_dot_R_dest = '",
+             overwrite_existing_model_dot_R_dest, "'\n", sep='')
 
-        if (!overwrite_existing_model_R_dest & file.exists (full_model_R_dest_path))
+        if (!overwrite_existing_model_dot_R_dest & file.exists (full_model_dot_R_dest_path))
             {
-            stop (paste0 ("\nIn write_model_R_file_to_work_area:  full_model_R_dest_path = '",
-                          full_model_R_dest_path, "' either exists.\n\n"))
+            stop (paste0 ("\nIn write_model_dot_R_file_to_work_area:  full_model_dot_R_dest_path = '",
+                          full_model_dot_R_dest_path, "' either exists.\n\n"))
 
             } else  #  dest exists but we're allowed to overwrite it
             {
-            file.copy (full_model_R_src_path, full_model_R_dest_path,
+            file.copy (full_model_dot_R_src_path, full_model_dot_R_dest_path,
                        overwrite = TRUE)
             }
         } else
         {
-        stop (paste0 ("\nIn write_model_R_file_to_work_area:  full_model_R_src_path = '",
-                      full_model_R_src_path, "' does not exist.\n\n"))
+        stop (paste0 ("\nIn write_model_dot_R_file_to_work_area:  full_model_dot_R_src_path = '",
+                      full_model_dot_R_src_path, "' does not exist.\n\n"))
         }
     }
 
 #===============================================================================
 
-cleanUpAfterTzarEmulation = function (parameters)
+#'  Get rid of any traces of running tzar emulation if emulating.
+#'
+#'  Need to rename the output directory to something to do
+#'  with emulation so that if you go back to a pile of directories
+#'  and find runs with strange output, you know that it's because
+#'  you were playing around with the code in the emulator.
+#'  Otherwise, you might have partial results in a run that
+#'  appeared to have run to completion because tzar DID run to
+#'  completion on the dummy model.R code that enabled the
+#'  emulation to build the tzar directories and parameters.
+#'
+#'  Can't do this earlier because you don't know how many
+#'  things inside the parameters list have the inprogress name
+#'  built into them by tzar.  If you changed the inprogress
+#'  directory name before running the user code, then the run
+#'  would be looking for the wrong directory.
+#'
+#'  However, if tzar itself knew that this was going to be an
+#'  emulation name, it could just use the emulation name wherever
+#'  it now uses the in progress name and it could skip the renaming
+#'  after the run is complete.  If those two things were happening,
+#'  then this cleanup code would be unnecessary.
+
+clean_up_after_tzar_emulation = function (tzarInProgressDirName,
+                                          tzarEmulationCompletedDirName,
+                                          copy_model_dot_R_tzar_file,
+                                          full_model_dot_R_dest_path,
+                                          emulation_scratch_file_path)
     {
-        #  Need to rename the output directory to something to do
-        #  with emulation so that if you go back to a pile of directories
-        #  and find runs with strange output, you know that it's because
-        #  you were playing around with the code in the emulator.
-        #  Otherwise, you might have partial results in a run that
-        #  appeared to have run to completion because tzar DID run to
-        #  completion on the dummy model.R code that enabled the
-        #  emulation to build the tzar directories and parameters.
-        #
-        #  Can't do this earlier because you don't know how many
-        #  things inside the parameters list have the inprogress name
-        #  built into them by tzar.  If you changed the inprogress
-        #  directory name before running the user code, then the run
-        #  would be looking for the wrong directory.
-        #
-        #  However, if tzar itself knew that this was going to be an
-        #  emulation name, it could just use the emulation name wherever
-        #  it now uses the in progress name and it could skip the renaming
-        #  after the run is complete.  If those two things were happening,
-        #  then this cleanup code would be unnecessary.
+    file.rename (tzarInProgressDirName, tzarEmulationCompletedDirName)
 
-    file.rename (parameters$tzarInProgressDirName,
-                 parameters$tzarEmulationCompletedDirName)
-
-    cat ("\n\nFinal tzar output is in:\n    '",
-         parameters$tzarEmulationCompletedDirName,
+    cat ("\n\nFinal tzar output is in:\n    '", tzarEmulationCompletedDirName,
          "'\n\n", sep='')
+
+    if (copy_model_dot_R_tzar_file)  file.remove (full_model_dot_R_dest_path)
+
+    file.remove (emulation_scratch_file_path)
     }
 
 #===============================================================================
@@ -143,23 +147,25 @@ cleanUpAfterTzarEmulation = function (parameters)
         #  declarations and so, will cause the build to fail).
         #----------------------------------------------------------------------
 
-copy_model_R_tzar_file_to_src_area <- function (model_R_tzar_src_dir,
-                                                model_R_tzar_disguised_filename,
+copy_model_dot_R_tzar_file_to_src_area <- function (model_dot_R_tzar_src_dir,
+                                                model_dot_R_tzar_disguised_filename,
                                                 project_path,
-                                                required_model_R_filename_for_tzar,
-                                                overwrite_existing_model_R_dest)
+                                                required_model_dot_R_filename_for_tzar,
+                                                overwrite_existing_model_dot_R_dest)
     {
-    full_model_R_src_path =
-      normalizePath (file.path (model_R_tzar_src_dir,
-                                model_R_tzar_disguised_filename))
-    full_model_R_dest_path =
+    full_model_dot_R_src_path =
+      normalizePath (file.path (model_dot_R_tzar_src_dir,
+                                model_dot_R_tzar_disguised_filename))
+    full_model_dot_R_dest_path =
       normalizePath (file.path (project_path,
-                                required_model_R_filename_for_tzar),
+                                required_model_dot_R_filename_for_tzar),
                      mustWork=FALSE)
 
-    try_to_write_model_R_file_to_work_area (full_model_R_src_path,
-                                            full_model_R_dest_path,
-                                            overwrite_existing_model_R_dest)
+    try_to_write_model_dot_R_file_to_work_area (full_model_dot_R_src_path,
+                                            full_model_dot_R_dest_path,
+                                            overwrite_existing_model_dot_R_dest)
+
+    return (full_model_dot_R_dest_path)
     }
 
 #===============================================================================
