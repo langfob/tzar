@@ -71,38 +71,16 @@
 #' @export
 #'
 #' @examples \dontrun{
-#' run_tzar (
-#'          parameters_yaml_file_path              = "./project.yaml"
+#'     #  Most frequent use:
+#' run_tzar ()
 #'
-##          emulating_tzar              = TRUE,
-##          main_function               = trial_main_function,
-##          project_path                = ".",
-##          emulation_scratch_file_path = "~/tzar_emulation_scratch.yaml",
-##          tzar_jar_path               = "~/D/rdv-framework-latest-work/tzar.jar",
-##          copy_model_dot_R_tzar_file             = FALSE,
-##          model_dot_R_tzar_src_dir               = model_dot_R_tzar_src_dir,
-##          model_dot_R_tzar_disguised_filename    = "model.R.tzar",
-##          overwrite_existing_model_dot_R_dest    = TRUE,
-##          required_model_dot_R_filename_for_tzar = "model.R"
-#'          )
+#'     #  Use with specific project.yaml file other than ./project.yaml
+#' run_tzar (parameters_yaml_file_path = "/Users/me/someplace/special_project.yaml")
 #'}
 
 #-------------------------------------------------------------------------------
 
 run_tzar <- function (parameters_yaml_file_path = "./project.yaml")
-
-        # function (emulating_tzar,
-        #           main_function,
-        #           project_path,
-        #           emulation_scratch_file_path,
-        #           tzar_jar_path,
-        #
-        #           copy_model_dot_R_tzar_file             = FALSE,
-        #           model_dot_R_tzar_src_dir               = ".",
-        #           model_dot_R_tzar_disguised_filename    = "model.R.tzar",
-        #           overwrite_existing_model_dot_R_dest    = FALSE,
-        #           required_model_dot_R_filename_for_tzar = "model.R"
-        #           )
     {
             #---------------------------------------------------------------
             #  Need to know a few parameter values that are in the tzar
