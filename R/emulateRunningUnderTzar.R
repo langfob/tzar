@@ -41,6 +41,14 @@
 
 #===============================================================================
 
+#' Run the tzar jar under java
+#'
+#' @param tzar_jar_path Path of directory where tzar jar is found
+#' @param project_path Path of directory where user code to be run is found
+
+#' @return NULL
+#' @export
+
 run_tzar_java_jar <- function (tzar_jar_path, project_path)
     {
     tzarCmd = paste ("-jar", tzar_jar_path, "execlocalruns", project_path)
@@ -265,6 +273,9 @@ cleanUpAfterTzarEmulation = function (parameters)
     }
 
 #===============================================================================
+
+#####  IS THIS STILL USED?  SEE TZAR PACKAGE ISSUE 5.
+#####  BTL - 2017 08 07
 
 get_parameters <- function (project_path,
 #                            tzar_jar_path,
