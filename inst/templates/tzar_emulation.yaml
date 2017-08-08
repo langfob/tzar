@@ -1,0 +1,20 @@
+    #-------------------------------------
+    #  Tzar emulation control parameters
+    #-------------------------------------
+
+        #  These might go away in the future if River adds emulation
+        #  directly inside of tzar with a "dry run" command.
+
+    emulating_tzar:                         TRUE
+    echo_console_to_temp_file:              TRUE
+
+    project_path:                           "/Users/bill/D/Projects/ProblemDifficulty/pkgs/bdpgxupaper/R"
+    tzar_jar_path:                          "~/D/rdv-framework-latest-work/tzar.jar"
+    emulation_scratch_file_path:            "~/tzar/tzar_emulation_scratch_area/tzar_emulation_scratch.yaml"
+
+    copy_model_dot_R_tzar_file:             TRUE
+    model_dot_R_tzar_SRC_dir:               "/Users/bill/D/Projects/ProblemDifficulty/pkgs/bdpgxupaper/R"    #"."    #system.file("templates", package="bdpgxupaper")
+    model_dot_R_tzar_disguised_filename:    "model.R.tzar"
+    required_model_dot_R_filename_for_tzar: "model.R"
+    overwrite_existing_model_dot_R_DEST:    TRUE
+
