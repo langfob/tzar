@@ -41,9 +41,14 @@ run_tzar_java_jar <- function (tzar_jar_path, project_path)
 #' as.logical() does for vectors.  For the moment, this is just working
 #' on single values when they are NULL.
 
+#' @param value value to be converted to boolean
+
+#' @return input value as a boolean
+#' @export
+
 as_boolean <- function (value)
     {
-    if (is.null (params_value)) FALSE else as.logical (value)
+    if (is.null (value)) FALSE else as.logical (value)
     }
 
 #===============================================================================
