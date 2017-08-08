@@ -43,8 +43,11 @@
 #'        can use the emulator with the least amount of installation
 #'        and management work for you when using the tzar package.
 
+#' @param main_function  name of function to call to run under tzar or tzar emulation
 #' @param parameters_yaml_file_path Full path with file name for the
 #' project.yaml file
+#' @param tzar_emulation_yaml_file_path Full path with file name for the
+#' yaml file containing control values for tzar emulation
 #'
 ## @param emulating_tzar boolean with TRUE indicating main_function should be
 ## run under tzar emulation and FALSE indicating run under normal tzar
@@ -80,7 +83,9 @@
 
 #-------------------------------------------------------------------------------
 
-run_tzar <- function (parameters_yaml_file_path = "./project.yaml")
+run_tzar <- function (main_function,
+                      parameters_yaml_file_path = "./R/project.yaml",
+                      tzar_emulation_yaml_file_path = "./R/tzar_emulation.yaml")
     {
             #---------------------------------------------------------------
             #  Need to know a few parameter values that are in the tzar
@@ -98,7 +103,8 @@ run_tzar <- function (parameters_yaml_file_path = "./project.yaml")
             #  be related to which list is used at a given time.
             #---------------------------------------------------------------
 
-    params = yaml::yaml.load_file (parameters_yaml_file_path)
+    params = yaml::yaml.load_file (normalizePath (tzar_emulation_yaml_file_path,
+                                                  mustWork=TRUE))
 
     emulating_tzar              = as_boolean (params$emulating_tzar)
     copy_model_dot_R_tzar_file  = as_boolean (params$copy_model_dot_R_tzar_file)
