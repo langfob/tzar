@@ -182,8 +182,8 @@ run_tzar <- function (parameters_yaml_file_path = "./project.yaml")
 
         main_function (parameters)
 
-        clean_up_after_tzar_emulation (parameters$tzarInProgressDirName,
-                                       parameters$tzarEmulationCompletedDirName,
+        clean_up_after_tzar_emulation (parameters$tzar_in_progress_dir_name,
+                                       parameters$tzar_emulation_completed_dir_name,
                                        copy_model_dot_R_tzar_file,
                                        full_model_dot_R_DEST_path,
                                        emulation_scratch_file_path)
