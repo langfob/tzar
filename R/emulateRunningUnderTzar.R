@@ -109,7 +109,7 @@ emulate_running_tzar <- function (
             #  So, to be able to use the parameters.R file as it was built
             #  during the dummy model.R run, we need to change the finished
             #  directory's name back to the .inprogress extension.
-browser()
+
     file.rename (tzar_finished_dir_name, tzar_in_progress_dir_name)
 
         #-----------------------------------------------------------
@@ -130,7 +130,7 @@ browser()
 
     parameters$tzar_in_progress_dir_name = tzar_in_progress_dir_name
 
-    parameters$tzarEmulationCompletedDirName =
+    parameters$tzar_emulation_completed_dir_name =
         paste0 (tzar_finished_dir_name, tzar_emulation_completed_dir_extension)
 
     parameters$tzar_emulation_scratch_file_name = tzar_emulation_scratch_file_name
