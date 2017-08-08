@@ -102,47 +102,6 @@ try_to_write_model_dot_R_file_to_work_area <-
 
 #===============================================================================
 
-#'  Get rid of any traces of running tzar emulation if emulating.
-#'
-#'  Need to rename the output directory to something to do
-#'  with emulation so that if you go back to a pile of directories
-#'  and find runs with strange output, you know that it's because
-#'  you were playing around with the code in the emulator.
-#'  Otherwise, you might have partial results in a run that
-#'  appeared to have run to completion because tzar DID run to
-#'  completion on the dummy model.R code that enabled the
-#'  emulation to build the tzar directories and parameters.
-#'
-#'  Can't do this earlier because you don't know how many
-#'  things inside the parameters list have the inprogress name
-#'  built into them by tzar.  If you changed the inprogress
-#'  directory name before running the user code, then the run
-#'  would be looking for the wrong directory.
-#'
-#'  However, if tzar itself knew that this was going to be an
-#'  emulation name, it could just use the emulation name wherever
-#'  it now uses the in progress name and it could skip the renaming
-#'  after the run is complete.  If those two things were happening,
-#'  then this cleanup code would be unnecessary.
-
-clean_up_after_tzar_emulation = function (tzar_in_progress_dir_name,
-                                          tzar_emulation_completed_dir_name,
-                                          copy_model_dot_R_tzar_file,
-                                          full_model_dot_R_DEST_path,
-                                          emulation_scratch_file_path)
-    {
-    file.rename (tzar_in_progress_dir_name, tzar_emulation_completed_dir_name)
-
-    cat ("\n\nFinal tzar output is in:\n    '", tzar_emulation_completed_dir_name,
-         "'\n\n", sep='')
-
-    if (copy_model_dot_R_tzar_file)  file.remove (full_model_dot_R_DEST_path)
-
-    file.remove (emulation_scratch_file_path)
-    }
-
-#===============================================================================
-
         #----------------------------------------------------------------------
         #  If emulating tzar and there is no model.R file in the source code
         #  area, copy the template model.R file into the area.
@@ -172,6 +131,47 @@ copy_model_dot_R_tzar_file_to_src_area <-
                                             overwrite_existing_model_dot_R_DEST)
 
     return (full_model_dot_R_DEST_path)
+    }
+
+#===============================================================================
+
+#'  Get rid of any traces of running tzar emulation if emulating.
+#'
+#'  Need to rename the output directory to something to do
+#'  with emulation so that if you go back to a pile of directories
+#'  and find runs with strange output, you know that it's because
+#'  you were playing around with the code in the emulator.
+#'  Otherwise, you might have partial results in a run that
+#'  appeared to have run to completion because tzar DID run to
+#'  completion on the dummy model.R code that enabled the
+#'  emulation to build the tzar directories and parameters.
+#'
+#'  Can't do this earlier because you don't know how many
+#'  things inside the parameters list have the inprogress name
+#'  built into them by tzar.  If you changed the inprogress
+#'  directory name before running the user code, then the run
+#'  would be looking for the wrong directory.
+#'
+#'  However, if tzar itself knew that this was going to be an
+#'  emulation name, it could just use the emulation name wherever
+#'  it now uses the in progress name and it could skip the renaming
+#'  after the run is complete.  If those two things were happening,
+#'  then this cleanup code would be unnecessary.
+
+clean_up_after_tzar_emulation = function (tzar_in_progress_dir_name,
+                                          tzar_emulation_completed_dir_name,
+                                          copy_model_dot_R_tzar_file,
+                                          full_model_dot_R_DEST_path,
+                                          emulation_scratch_file_path)
+    {
+    cat ("\n\nFinal tzar output is in:\n    '", tzar_emulation_completed_dir_name,
+         "'\n\n", sep='')
+
+    file.rename (tzar_in_progress_dir_name, tzar_emulation_completed_dir_name)
+
+    if (copy_model_dot_R_tzar_file)  file.remove (full_model_dot_R_DEST_path)
+
+    file.remove (emulation_scratch_file_path)
     }
 
 #===============================================================================
