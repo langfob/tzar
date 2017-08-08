@@ -19,10 +19,6 @@ model.R code for tzar or tzar emulation
 }
 \examples{
 \dontrun{
-model_with_possible_tzar_emulation (parameters,
-                                    main_function                 = trial_main_function,
-                                    projectPath                   = ".",
-                                    emulation_scratch_file_path   = "~/tzar_emulation_scratch.yaml"
-                                   )
+model_with_possible_tzar_emulation (parameters, my_main_function)
 }
 }

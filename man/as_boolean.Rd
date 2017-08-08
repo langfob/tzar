@@ -6,6 +6,12 @@
 \usage{
 as_boolean(value)
 }
+\arguments{
+\item{value}{value to be converted to boolean}
+}
+\value{
+input value as a boolean
+}
 \description{
 The core function as.logical() crashes if you give it a NULL.
 This convenience function turns those NULLs into FALSE and preserves
