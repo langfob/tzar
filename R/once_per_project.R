@@ -8,8 +8,9 @@
 #'
 #' This is a convenience function to run one time at the start of using tzar
 #' emulation on a project.  Tzar requires a model.R file and tzar emulation
-#' requires a file like tzar_main.R to call the user's application code.  The
-#' tzar package provides a template for each of these two files to make it as
+#' requires a file like tzar_main.R to call the user's application code as
+#' well as a tzar_emulation.yaml file to specify emulation control parameters.
+#' The tzar package provides a template for each of these files to make it as
 #' simple as possible to do emulation.
 #'
 #' One catch in using the templates is that when development is being done as
@@ -24,6 +25,9 @@
 #' Note that if tzar emulation is to be done in a normal R programming situation
 #' that doesn't involve a package build, then it's fine for model.R to keep its
 #' name as is.
+#'
+#' Note also that, for safety, the copying operation will not overwrite any
+#' existing file with the same name in the target directory.
 #'
 #' @param target_dir Path of directory where template files are to be deposited
 #' @param running_inside_a_package Boolean flag set to TRUE if emulation will be
@@ -47,7 +51,12 @@ get_tzar_R_templates <- function (target_dir = ".",
     target_dir = normalizePath (target_dir)
 
     file.copy (system.file ("templates/tzar_main.R", package="tzar"),
-               target_dir)
+               target_dir,
+               overwrite=FALSE)
+
+    file.copy (system.file ("templates/tzar_emulation.yaml", package="tzar"),
+               target_dir,
+               overwrite=FALSE)
 
         #-----------------------------------------------------------------------
         #  If model.R is to be part of a package, then it can't be named
@@ -62,11 +71,13 @@ get_tzar_R_templates <- function (target_dir = ".",
     if (running_inside_a_package)
         {
         file.copy (system.file ("templates/model.R", package="tzar"),
-                   file.path (target_dir, "model.R.tzar"))
+                   file.path (target_dir, "model.R.tzar"),
+                   overwrite=FALSE)
         } else
         {
         file.copy (system.file ("templates/model.R", package="tzar"),
-                   target_dir)
+                   target_dir,
+                   overwrite=FALSE)
         }
 
     return (NULL)
