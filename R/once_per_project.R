@@ -4,7 +4,7 @@
 
 #===============================================================================
 
-#' get template files for running tzar emulation
+#' get template files for setting up to run tzar emulation
 #'
 #' This is a convenience function to run one time at the start of using tzar
 #' emulation on a project.  Tzar requires a model.R file and tzar emulation
@@ -22,12 +22,13 @@
 #' name of model.R as model.R.tzar and then renaming it to model.R just before a
 #' tzar run, then renaming it back to model.R.tzar after the emulation run.
 #'
-#' Note that if tzar emulation is to be done in a normal R programming situation
+#' To cover this situation, set the running_inside_a_package argument to TRUE.
+#' If tzar emulation is to be done in a normal R programming situation
 #' that doesn't involve a package build, then it's fine for model.R to keep its
-#' name as is.
+#' name as is and set running_inside_a_package to FALSE.
 #'
-#' Note also that, for safety, the copying operation will not overwrite any
-#' existing file with the same name in the target directory.
+#' Note that for safety, the copying operations done in this function will
+#' not overwrite any existing file with the same name in the target directory.
 #'
 #' @param target_dir Path of directory where template files are to be deposited
 #' @param running_inside_a_package Boolean flag set to TRUE if emulation will be
@@ -41,8 +42,8 @@
 #'     #  developing a package.
 #' get_tzar_pkg_templates ()
 #'
-#'     #  Copy template files to R subdirectory for use in normal R development
-#'     #  outsides of a package.
+#'     #  Copy template files to R subdirectory for use in normal
+#'     #  R development outside of developing a package.
 #' get_tzar_pkg_templates ("./R", FALSE)
 #' }
 get_tzar_pkg_templates <- function (target_dir = ".",

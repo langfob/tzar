@@ -2,7 +2,7 @@
 % Please edit documentation in R/once_per_project.R
 \name{get_tzar_pkg_templates}
 \alias{get_tzar_pkg_templates}
-\title{get R template files for running tzar emulation}
+\title{get template files for setting up to run tzar emulation}
 \usage{
 get_tzar_pkg_templates(target_dir = ".", running_inside_a_package = TRUE)
 }
@@ -30,12 +30,13 @@ inside a package build.  Tzar emulation gets around this by disguising the
 name of model.R as model.R.tzar and then renaming it to model.R just before a
 tzar run, then renaming it back to model.R.tzar after the emulation run.
 
-Note that if tzar emulation is to be done in a normal R programming situation
+To cover this situation, set the running_inside_a_package argument to TRUE.
+If tzar emulation is to be done in a normal R programming situation
 that doesn't involve a package build, then it's fine for model.R to keep its
-name as is.
+name as is and set running_inside_a_package to FALSE.
 
-Note also that, for safety, the copying operation will not overwrite any
-existing file with the same name in the target directory.
+Note that for safety, the copying operations done in this function will
+not overwrite any existing file with the same name in the target directory.
 }
 \examples{
 \dontrun{
@@ -43,8 +44,8 @@ existing file with the same name in the target directory.
     #  developing a package.
 get_tzar_pkg_templates ()
 
-    #  Copy template files to R subdirectory for use in normal R development
-    #  outsides of a package.
+    #  Copy template files to R subdirectory for use in normal
+    #  R development outside of developing a package.
 get_tzar_pkg_templates ("./R", FALSE)
 }
 }
