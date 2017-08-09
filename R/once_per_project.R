@@ -4,7 +4,7 @@
 
 #===============================================================================
 
-#' get R template files for running tzar emulation
+#' get template files for running tzar emulation
 #'
 #' This is a convenience function to run one time at the start of using tzar
 #' emulation on a project.  Tzar requires a model.R file and tzar emulation
@@ -39,14 +39,14 @@
 #' @examples \dontrun{
 #'     #  Copy template files to current directory for use in
 #'     #  developing a package.
-#' get_tzar_R_templates ()
+#' get_tzar_pkg_templates ()
 #'
 #'     #  Copy template files to R subdirectory for use in normal R development
 #'     #  outsides of a package.
-#' get_tzar_R_templates ("./R", FALSE)
+#' get_tzar_pkg_templates ("./R", FALSE)
 #' }
-get_tzar_R_templates <- function (target_dir = ".",
-                                  running_inside_a_package = TRUE)
+get_tzar_pkg_templates <- function (target_dir = ".",
+                                    running_inside_a_package = TRUE)
     {
     target_dir = normalizePath (target_dir)
 

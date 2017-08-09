@@ -2,8 +2,8 @@
 
 export(as_boolean)
 export(clean_up_console_sink_if_necessary)
-export(get_tzar_R_templates)
 export(get_tzar_emulation_flag_and_console_sink_if_requested)
+export(get_tzar_pkg_templates)
 export(model_with_possible_tzar_emulation)
 export(open_sink_file_if_requested)
 export(run_tzar)
