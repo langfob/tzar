@@ -34,8 +34,8 @@ emulate_running_tzar <- function (
     # #project_path = "~/D/rdv-framework/projects/rdvPackages/biodivprobgen/R"
     # project_path = "~/D/Projects/ProblemDifficulty/src/bdprobdiff/R"
 
-    # #tzar_jar_path = "~/D/rdv-framework/tzar.jar"
-    # tzar_jar_path = "~/D/rdv-framework-latest-work/tzar.jar"
+    # #tzar_jar_name_with_path = "~/D/rdv-framework/tzar.jar"
+    # tzar_jar_name_with_path = "~/D/rdv-framework-latest-work/tzar.jar"
 
     # #tzar_emulation_scratch_file_name = "~/D/rdv-framework/projects/rdvPackages/biodivprobgen/R/tzarEmulation_scratchFile.txt"
     # tzar_emulation_scratch_file_name = "~/D/Projects/ProblemDifficulty/src/bdprobdiff/R/tzarEmulation_scratchFile.txt"
@@ -57,7 +57,7 @@ emulate_running_tzar <- function (
         #     output directory.
         #-----------------------------------------------------------------------
 
-#    run_tzar_java_jar (tzar_jar_path, project_path)
+#    run_tzar_java_jar (tzar_jar_name_with_path, project_path)
 
         #----------------------------------------------------------
         #  tzar has wildcard-substituted the inProgress name throughout
