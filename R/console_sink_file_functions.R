@@ -6,105 +6,87 @@
 
 #===============================================================================
 
-#' Open console sink file for saving all console output during a run if asked
+#' Open console sink file for saving all console output during a run
 #'
-#' @param emulating_tzar boolean
-#' @param echo_console_to_temp_file boolean
-#' @param full_output_dir_with_slash path string
-#' @param console_output_file_name file name string
+#' @param sink_file_path tzar_em_scratch_dir Location of tzar emulation scratch
+#' directory as path string with no trailing slash
+#' @param console_output_file_name console_output_file_name file name string for file to
+#' contain console sink output without any path information in the string
 #'
-#' @return Returns List containing emulating_tzar flag,
-#' echo_console_to_temp_file flag, and temp_console_out_file.
+#' @return Returns console_sink_file_info list containing named elements
+#' console_output_file_name, sink_file_path, temp_console_out_file
 #' @export
 
-open_sink_file_if_requested <-
-    function (emulating_tzar, echo_console_to_temp_file,
-              full_output_dir_with_slash,
-              console_output_file_name = "console_sink_output.temp.txt")
+open_sink_file <- function (console_out_file_name_with_path)
     {
-    temp_console_out_file = NULL
-
-    if (emulating_tzar & echo_console_to_temp_file)
-        {
-        sink_file_path = paste0 (full_output_dir_with_slash, console_output_file_name)
-
             #  Open a file to echo console to.
-        temp_console_out_file <- file (sink_file_path, open="wt")
+    temp_console_out_file = file (console_out_file_name_with_path, open="wt")
 
         	#  Redirect console output to the file.
-        sink (temp_console_out_file, split=TRUE)
-        }
+    sink (temp_console_out_file, split=TRUE)
 
-    return (list (emulating_tzar=emulating_tzar,
-                  echo_console_to_temp_file=echo_console_to_temp_file,
-                  temp_console_out_file=temp_console_out_file))
-    }
-
-#-------------------------------------------------------------------------------
-
-#' Get value for tzar emulation flag and create console sink file if asked
-#'
-#' @param parameters List of parameters read from project.yaml file.
-
-#' @return Returns List containing emulating_tzar flag,
-#' echo_console_to_temp_file flag, and temp_console_out_file.
-#' @export
-
-get_tzar_emulation_flag_and_console_sink_if_requested <- function (parameters)
-    {
-    # echo_console_to_temp_file = TRUE
-    # if (! is.null (parameters$echo_console_to_temp_file))
-    #     echo_console_to_temp_file = parameters$echo_console_to_temp_file
-    echo_console_to_temp_file = tzar::as_boolean (parameters$echo_console_to_temp_file)
-
-    # emulating_tzar = FALSE
-    # if (! is.null (parameters$emulating_tzar))
-    #     emulating_tzar = parameters$emulating_tzar
-    emulating_tzar = tzar::as_boolean (parameters$emulating_tzar)
-
-    return (open_sink_file_if_requested (emulating_tzar,
-                                         echo_console_to_temp_file,
-                                         parameters$full_output_dir_with_slash))
+    return (list (console_out_file_name_with_path =
+                      console_out_file_name_with_path,
+                  temp_console_out_file    = temp_console_out_file))
     }
 
 #===============================================================================
 
-#' Clean up the sink file created for console output if requested
+#' Clean up the sink file created for console output if necessary
 #'
-#' @param tzar_emulation_flag_and_console_sink_information List containing
-#' emulating_tzar flag, echo_console_to_temp_file flag, and
-#' temp_console_out_file.
+#' @param echo_console_to_temp_file boolean
+#' @param console_sink_file_info list containing named elements
+#' console_output_file_name, sink_file_path, temp_console_out_file
+#' @param full_output_dir_with_slash file
 
 #' @return Returns nothing
 #' @export
 
-clean_up_console_sink_if_necessary <-
-    function (tzar_emulation_flag_and_console_sink_information)
+clean_up_console_sink <-
+    function (echo_console_to_temp_file,
+              console_sink_file_info,
+              full_output_dir_with_slash)
     {
-    emulating_tzar =
-        tzar_emulation_flag_and_console_sink_information$emulating_tzar
-
-    echo_console_to_temp_file =
-        tzar_emulation_flag_and_console_sink_information$echo_console_to_temp_file
-
-    temp_console_out_file =
-        tzar_emulation_flag_and_console_sink_information$temp_console_out_file
-
-    cat ("\n\nIn clean_up_tzar_emulation:\n")
-    cat ("    emulating_tzar         = ", emulating_tzar, "\n")
-    cat ("    echo_console_to_temp_file = ", echo_console_to_temp_file, "\n")
-    if (is.null (temp_console_out_file))
-        cat ("    temp_console_out_file is NULL\n")
+    cat ("\n\nIn clean_up_console_sink:\n")
 
         #  If you were echoing console output to a temp file,
         #  stop echoing and close the temp file.
 
-    if (emulating_tzar & echo_console_to_temp_file)
+    if (echo_console_to_temp_file)
         {
         cat ("\nClosing sink file.\n")
 
+        console_out_file_name_with_path = console_sink_file_info$console_out_file_name_with_path
+        temp_console_out_file = console_sink_file_info$temp_console_out_file
+
         sink()
-        if (! is.null (temp_console_out_file))  close (temp_console_out_file)
+
+        if (is.null (temp_console_out_file))
+            {
+            cat ("    temp_console_out_file is NULL\n")
+
+            } else
+            {
+            close (temp_console_out_file)
+
+                #  Move the console output file to the tzar output
+                #  metadata area for the current run in case it's
+                #  needed in later debugging to compare between
+                #  runs, e.g., if something was being output in a
+                #  previous run but is no longer output, etc..
+
+            full_output_dir_WITHOUT_slash =
+                substr (full_output_dir_with_slash, 1,
+                        nchar(full_output_dir_with_slash)-1)
+
+            dest = file.path (full_output_dir_WITHOUT_slash,
+                              "metadata",
+                              basename (console_out_file_name_with_path))
+
+            cat ("\ndestination for sink file move = '", dest, "'\n")
+
+            file.rename (console_out_file_name_with_path, dest)
+            }
         }
     }
 
