@@ -56,7 +56,7 @@
 ## @param project_path path of R code and project.yaml file for project
 ## @param emulation_scratch_file_path path of scratch file for passing
 ## tzarEmulation flag and tzarOutputDir between tzar and mainline function
-## @param tzar_jar_path Path to the jar file to use to run tzar
+## @param tzar_jar_name_with_path Path to the jar file to use to run tzar
 ##
 ## @param copy_model_dot_R_tzar_file Boolean flag indicating whether model.R must
 ## be copied in (e.g., when running inside a package)
@@ -84,44 +84,45 @@
 #-------------------------------------------------------------------------------
 
 run_tzar <- function (main_function,
-                      parameters_yaml_file_path = "./R/project.yaml",
-                      tzar_emulation_yaml_file_path = "./R/tzar_emulation.yaml")
+                      parameters_yaml_file_path = "./project.yaml",
+                      tzar_emulation_yaml_file_path = "./tzar_emulation.yaml")
     {
-            #---------------------------------------------------------------
-            #  Need to know a few parameter values that are in the tzar
-            #  project.yaml file, but that file won't be loaded by tzar
-            #  until run_tzar_java_jar() is called.  So, we need to read
-            #  that file now.
-            #
-            #  Tzar will read it again later and modify the parameters
-            #  loaded from it (e.g., building output directory name), so
-            #  we will call the list loaded here "params" to differentiate
-            #  it from the list loaded later as "parameters".
-            #  It probably wouldn't matter if they were both called by
-            #  the same name, but having them under different names will
-            #  make it easier to compare them if there is a bug that might
-            #  be related to which list is used at a given time.
-            #---------------------------------------------------------------
+            #-----------------------------------------------------------------
+            #  Get tzar emulation options from the tzar emulation yaml file.
+            #  This yaml file is separate from the tzar project.yaml file
+            #  because emulation parameters are irrelevant to tzar itself.
+            #  Plus, the project.yaml file is not read until tzar is loaded
+            #  and it may contain things like wildcards that the normal
+            #  yaml reader couldn't easily handle reading it here.
+            #-----------------------------------------------------------------
 
-    params = yaml::yaml.load_file (normalizePath (tzar_emulation_yaml_file_path,
+    tzar_em_params = yaml::yaml.load_file (normalizePath (tzar_emulation_yaml_file_path,
                                                   mustWork=TRUE))
 
-    emulating_tzar              = as_boolean (params$emulating_tzar)
-    copy_model_dot_R_tzar_file  = as_boolean (params$copy_model_dot_R_tzar_file)
+    emulating_tzar              = as_boolean (tzar_em_params$emulating_tzar)
 
-    emulation_scratch_file_path = params$emulation_scratch_file_path
-    tzar_jar_path               = params$tzar_jar_path
-    project_path                = params$project_path
+    echo_console_to_temp_file       = as_boolean (tzar_em_params$echo_console_to_temp_file)
+    console_out_file_name_with_path = tzar_em_params$console_out_file_name_with_path
+
+    copy_model_dot_R_tzar_file  = as_boolean (tzar_em_params$copy_model_dot_R_tzar_file)
+
+#    tzar_em_scratch_dir         = tzar_em_params$emulation_scratch_dir
+#    emulation_scratch_file_path = tzar_em_params$emulation_scratch_file_path
+    project_path                = tzar_em_params$project_path
+    tzar_jar_name_with_path     = tzar_em_params$tzar_jar_name_with_path
+    emulation_scratch_file_name_with_path = tzar_em_params$emulation_scratch_file_name_with_path
 
     model_dot_R_tzar_SRC_dir =
-                        params$model_dot_R_tzar_SRC_dir
+                        tzar_em_params$model_dot_R_tzar_SRC_dir
     model_dot_R_tzar_disguised_filename =
-                        params$model_dot_R_tzar_disguised_filename
+                        tzar_em_params$model_dot_R_tzar_disguised_filename
     required_model_dot_R_filename_for_tzar =
-                        params$required_model_dot_R_filename_for_tzar
+                        tzar_em_params$required_model_dot_R_filename_for_tzar
     overwrite_existing_model_dot_R_DEST =
-                        as_boolean (params$overwrite_existing_model_dot_R_DEST)
+                        as_boolean (tzar_em_params$overwrite_existing_model_dot_R_DEST)
 
+    if (emulating_tzar)
+        {
             #---------------------------------------------------------------
             #  Get the full path to the emulation scratch file.
             #  Make sure the path is in canonical form
@@ -131,17 +132,16 @@ run_tzar <- function (main_function,
             #  that we don't want to see.
             #---------------------------------------------------------------
 
-    if (emulating_tzar)
-        emulation_scratch_file_path =
-            normalizePath (emulation_scratch_file_path,
+        emulation_scratch_file_name_with_path =
+            normalizePath (emulation_scratch_file_name_with_path,
                            mustWork=FALSE)
 
-            #----------------------------------------------------------------
-            #  If emulating tzar and there is no model.R file in the source
-            #  code area, copy the template model.R file into the area.
-            #----------------------------------------------------------------
+            #--------------------------------------------------------
+            #  If there is no model.R file in the source code area,
+            #  copy the template model.R file into the area.
+            #--------------------------------------------------------
 
-    if (emulating_tzar & copy_model_dot_R_tzar_file)
+        if (copy_model_dot_R_tzar_file)
             full_model_dot_R_DEST_path =
                     copy_model_dot_R_tzar_file_to_src_area (
                                         model_dot_R_tzar_SRC_dir,
@@ -150,11 +150,26 @@ run_tzar <- function (main_function,
                                         required_model_dot_R_filename_for_tzar,
                                         overwrite_existing_model_dot_R_DEST)
 
-            #--------------------------------------------------------------------
-            #  Ready to make the actual call to tzar from the command line now.
-            #--------------------------------------------------------------------
+            #---------------------------------------------------------
+            #  Often, a run will overflow the console buffer and
+            #  important debugging output to the console output will
+            #  be lost.  One solution is to tee the console output
+            #  to a sink file.  If that option wass requested,
+            #  open the sink file now.
+            #---------------------------------------------------------
 
-    run_tzar_java_jar (tzar_jar_path, project_path)
+        if (echo_console_to_temp_file)
+            console_sink_file_info =
+                open_sink_file (console_out_file_name_with_path)
+        }
+
+    #--------------------------------------------------------------------
+    #--------------------------------------------------------------------
+    #  Ready to make the actual call to tzar from the command line now.
+    #--------------------------------------------------------------------
+    #--------------------------------------------------------------------
+
+    run_tzar_java_jar (tzar_jar_name_with_path, project_path)
 
             #-------------------------------------------------------------------
             #  Tzar has now finished doing its run or crashed trying.
@@ -166,7 +181,8 @@ run_tzar <- function (main_function,
             #  If this is a tzar emulation run, it's now time to:
             #    - Collect parameters set by tzar so we can hand them to the
             #      real code.
-            #    - Run the real code.
+            #    - Run the user's real code.
+            #    - Clean up the emulation (e.g., renaming various things)
             #-------------------------------------------------------------------
 
     if (emulating_tzar)
@@ -180,7 +196,7 @@ run_tzar <- function (main_function,
                 #----------------------------------------------------------
 
         parameters = emulate_running_tzar (project_path,
-                                           emulation_scratch_file_path)
+                                           emulation_scratch_file_name_with_path)
 
                 #-------------------------------------------------------
                 #  Finally, ready to run the user's code and clean up.
@@ -192,7 +208,12 @@ run_tzar <- function (main_function,
                                        parameters$tzar_emulation_completed_dir_name,
                                        copy_model_dot_R_tzar_file,
                                        full_model_dot_R_DEST_path,
-                                       emulation_scratch_file_path)
+                                       emulation_scratch_file_name_with_path,
+                                       echo_console_to_temp_file,
+                                       console_sink_file_info,
+                                       parameters$full_output_dir_with_slash)
+
+        cat ("\n\nIn run_tzar:  Finished running tzar WITH emulation...")
 
         } else
         {
