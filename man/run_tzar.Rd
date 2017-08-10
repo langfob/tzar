@@ -4,8 +4,8 @@
 \alias{run_tzar}
 \title{Run a function under normal tzar or tzar emulation}
 \usage{
-run_tzar(main_function, parameters_yaml_file_path = "./R/project.yaml",
-  tzar_emulation_yaml_file_path = "./R/tzar_emulation.yaml")
+run_tzar(main_function, parameters_yaml_file_path = "./project.yaml",
+  tzar_emulation_yaml_file_path = "./tzar_emulation.yaml")
 }
 \arguments{
 \item{main_function}{name of function to call to run under tzar or tzar emulation}

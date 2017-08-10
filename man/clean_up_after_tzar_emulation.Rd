@@ -6,7 +6,8 @@
 \usage{
 clean_up_after_tzar_emulation(tzar_in_progress_dir_name,
   tzar_emulation_completed_dir_name, copy_model_dot_R_tzar_file,
-  full_model_dot_R_DEST_path, emulation_scratch_file_path)
+  full_model_dot_R_DEST_path, emulation_scratch_file_path,
+  echo_console_to_temp_file, console_sink_file_info, full_output_dir_with_slash)
 }
 \description{
 Need to rename the output directory to something to do

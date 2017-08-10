@@ -4,10 +4,10 @@
 \alias{run_tzar_java_jar}
 \title{Run the tzar jar under java}
 \usage{
-run_tzar_java_jar(tzar_jar_path, project_path)
+run_tzar_java_jar(tzar_jar_name_with_path, project_path)
 }
 \arguments{
-\item{tzar_jar_path}{Path of directory where tzar jar is found}
+\item{tzar_jar_name_with_path}{Path of directory where tzar jar is found}
 
 \item{project_path}{Path of directory where user code to be run is found}
 }

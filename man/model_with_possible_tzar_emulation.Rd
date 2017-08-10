@@ -4,7 +4,8 @@
 \alias{model_with_possible_tzar_emulation}
 \title{model.R code for tzar or tzar emulation}
 \usage{
-model_with_possible_tzar_emulation(parameters, main_function)
+model_with_possible_tzar_emulation(parameters, main_function,
+  tzar_emulation_yaml_file_path = "./tzar_emulation.yaml")
 }
 \arguments{
 \item{parameters}{list of parameters built by tzar from project.yaml}
