@@ -4,10 +4,35 @@
 
 #  Utilities for managing a console sink file.
 
+#-------------------------------------------------------------------------------
+
+#  Notes moved from bdpgxupaper::xu_paper_main():
+
+#  When using RStudio, the console output buffer is currently limited and
+#  you can lose informative console output from bdprobdiff in a big run.
+#  To capture that output, tee the output to a scratch sink file.
+#
+#  NOTE:  For some reason, this sink causes a warning message after
+#  the code comes back from a marxan run:
+#      unused connection
+#  I have no idea why this happens, especially because it doesn't always
+#  happen.  Since I have warnings set to generate errors rather than
+#  warnings, it stops the program by calling browser().  If I just hit Q,
+#  then the program continues from there without any problems.
+#  At the moment, trapping all the output is more important than having
+#  this annoying little hitch, so I'm leaving all this in.
+#  At production time, I'll need to either remove it or fix it.
+#  I should add an issue for this in the github issue tracking.
+
+#  2017 08 10 - BTL - Moving this into the tzar package.
+# tzar_emulation_flag_and_console_sink_information =
+#     tzar::get_tzar_emulation_flag_and_console_sink_if_requested (parameters)
+
 #===============================================================================
 
 #' Open console sink file for saving all console output during a run
 #'
+
 #' @param sink_file_path tzar_em_scratch_dir Location of tzar emulation scratch
 #' directory as path string with no trailing slash
 #' @param console_output_file_name console_output_file_name file name string for file to
