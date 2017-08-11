@@ -40,7 +40,7 @@ For each project that uses tzar emulation, you will need to do the steps below, 
 ```
 
 ### Each time you run your R code under tzar emulation:
-- *Call runt() or run_tzar()* at command line
+- *Call `runt` or `run_tzar`* at command line
 
 ------------------------------------------------------------
 
@@ -101,8 +101,10 @@ Note that in what follows, all instances of `tzar_main` throughout the code are 
 **First**, for this very simple example, **model.R** can be chopped down to just these two lines:
 ```
 library (tzar)
-tzar::model_with_possible_tzar_emulation (parameters,
-                                          main_function = my_main_code)
+tzar::model_with_possible_tzar_emulation (
+                    parameters,
+                    main_function = tzar_main,
+                    tzar_emulation_yaml_file_path = "./tzar_emulation.yaml")
 ```
 
 **Second**, everything in **tzar_main.R** can be replaced with the lines in the code box below.  These lines define 2 functions that replace the 2 functions in the template. 
@@ -124,14 +126,14 @@ Here, the arguments to `run_tzar` inside `runt` are slightly modified from the t
 - the `main_function` argument is changed from `tzar_main` to `my_main_code`.
 
 ```R
-my_main_code <- function (parameters)
+my_main_code <- function (parameters, emulating_tzar=FALSE)
     {
     cat ("\nInside my_main_code():")
-    cat ("\n    parameters$full_output_dir_with_slash = \n'", 
-         parameters$full_output_dir_with_slash, 
+    cat ("\n    parameters$full_output_dir_with_slash = \n'",
+         parameters$full_output_dir_with_slash,
          "'")
-    cat ("\n    parameters$some_other_variable = '", 
-         parameters$some_other_variable, 
+    cat ("\n    parameters$some_other_variable = '",
+         parameters$some_other_variable,
          "'\n")
     }
 
@@ -145,18 +147,17 @@ runt <- function ()
 
 **Finally**, edit **tzar_emulation.yaml** to reflect this simple example.
 
-- The first 2 boolean flags are fine as they are.  
-- Most of the paths can be changed to simply be the current directory, i.e., ".".
-- The last 2 boolean flags need to be changed from TRUE to FALSE since you're not running this emulation inside of a package build.
-    - Strictly speaking, just switching the `copy_model_dot_R_tzar_file` flag from TRUE to FALSE should make all of the variables below it be ignored, however, changing them here gives an example of how they could be filled. 
+No values need to be changed except for the tzar_jar_name_with_path.  You need to replace "[FULL PATH TO YOUR TZAR JAR]" with the full path and file name for the tzar jar file on your machine, e.g., "~/tzar_jars/tzar-0.5.5.jar". 
 
 ```
 emulating_tzar:                         TRUE
+
 echo_console_to_temp_file:              TRUE
+console_out_file_name_with_path:        "./console_sink_output.tzar_em.txt"
 
 project_path:                           "."
-tzar_jar_path:                          "[FULL PATH TO YOUR COPY OF THE TZAR JAR]"  #  e.g., "~/apps/tzar.5.3.1.jar"
-emulation_scratch_file_path:            "."
+tzar_jar_name_with_path:                "[FULL PATH TO YOUR TZAR JAR]"
+emulation_scratch_file_name_with_path:  "./tzar_em_scratch.yaml"
 
 copy_model_dot_R_tzar_file:             FALSE
 model_dot_R_tzar_SRC_dir:               "."
@@ -174,24 +175,59 @@ source ("tzar_main.R")
 runt()
 ```
 
-This produces the output in the box below.  Most of the output is boilerplate that can be ignored, but notice:
+This produces the output in the box below.  The beginning of the output is boilerplate that can be ignored.  (NOTE:  In what follows below, the text appearing as "[...]" will be replaced by path information specific to your machine.)
+
+```
+> runt()
+Created 1 runs. 
+Outputdir: [...]/tzar_em_example/default_runset/1_default_scenario.inprogress 
+Running model: [...]/tzar_em_example/., run_id: 1, Project name: tzar_em_example, Scenario name: default_scenario, Flags:  
+Run 1 succeeded. 
+Executed 1 runs: 1 succeeded. 0 failed 
+
+In run_tzar:  Finished running dummy EMULATION code under tzar.
+               Ready to go back and run real code outside of tzar...
+```
+
+However, after the boilerplate, notice the following things:
 
 - The value of `parameters$full_output_dir_with_slash` has captured the directory that tzar built for your program's run, i.e., `[...]/tzar_em_example/default_runset/1_default_scenario.inprogress/`.
     - Notice the `.inprogress` extension on the directory name.  
         - That is the name of the directory while the emulation is running.  
         - If it runs to completion, the emulator replaces that extension with `.completedTzarEmulation` to show that this was an emulation run.
         - If it fails during emulation, the extension will still say `.inprogress` since the cleanup stage was never reached.
+
 - The value of `parameters$some_other_variable` is printed as "5", as it should since that's the value in the project.yaml file.
-- If you examine the `1_default_scenario.completedTzarEmulation` directory you will find the usual tzar metadata files in the `metadata` subdirectory.
 
 ```
-> runt()
+Inside my_main_code():
+    parameters$full_output_dir_with_slash = 
+' [...]/tzar_em_example/default_runset/1_default_scenario.inprogress/ '
+    parameters$some_other_variable = ' 5 '
+```
 
-Created 1 runs. 
-Outputdir: [...]/tzar_em_example/default_runset/1_default_scenario.inprogress 
-Running model: [...]/tzar_em_example/., run_id: 1, Project name: tzar_em_example, Scenario name: default_scenario, Flags:  
-Run 1 succeeded. 
-Executed 1 runs: 1 succeeded. 0 failed 
+- The output then shows the location of the final outputs after the emulator has renamed everything to indicate successful completion of the emulation.  If you examine the `1_default_scenario.completedTzarEmulation` directory you will find the usual tzar metadata files in the `metadata` subdirectory.
+
+```
+Final tzar output is in:
+    '[...]/tzar_em_example/default_runset/1_default_scenario.completedTzarEmulation'
+```
+
+- Because the tzar_emulation.yaml file in this example sets the `echo_console_to_temp_file` flag to TRUE, there should also be a copy of the console sink output in the metadata directory of `1_default_scenario.completedTzarEmulation`.  
+
+```
+In clean_up_console_sink:
+
+Closing sink file.
+
+destination for sink file move = ' [...]/tzar_em_example/default_runset/1_default_scenario.inprogress/metadata/console_sink_output.tzar_em.txt '
+
+
+In run_tzar:  Finished running tzar WITH emulation... 
+```
+- If you open that file in a text editor, you should see something like this:
+
+```
 
 
 In run_tzar:  Finished running dummy EMULATION code under tzar.
@@ -204,12 +240,15 @@ Inside my_main_code():
 
 Final tzar output is in:
     '[...]/tzar_em_example/default_runset/1_default_scenario.completedTzarEmulation'
+
+
+
+In clean_up_console_sink:
+
+Closing sink file.
 ```
 
-# BUG: But what happened to console sink!!
-###  Should have been a console sink output file.
-
-------------------------------------------------------------
+That's the end of the simple example.  Next, we discuss some common problems that can come up in tzar  emulation, particularly when you're first using it.
 
 ------------------------------------------------------------
 
@@ -269,6 +308,19 @@ Your use of tzar emulation is then reduced to a single call such as
 `runt()`.  Those functions are explained below.
 
 The reason for all this is that the whole process is a complete hack aimed at deceiving java tzar into doing what we want.  There has been talk of adding a "dry run" option to tzar to properly do what this hack does, but so far, it's just talk.  In the meantime, this hack works with little intervention on your part once it is set up for a given project.  Note that if you prefer not to install this package and don't mind doing a bit more intervention every time you do a run, a simple procedure for doing that is explained later in this README under the heading "The basic idea behind the emulator".
+
+
+------------------------------------------------------------
+
+------------------------------------------------------------
+
+
+#  ... README from here on is not finished...
+
+Most of it is old text from before the change to using the tzar_emulation.yaml file instead of hard-coding arguments to some functions.
+
+
+------------------------------------------------------------
 
 ------------------------------------------------------------
 
