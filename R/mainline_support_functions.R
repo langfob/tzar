@@ -170,8 +170,6 @@ clean_up_after_tzar_emulation <- function (tzar_in_progress_dir_name,
     cat ("\n\nFinal tzar output is in:\n    '", tzar_emulation_completed_dir_name,
          "'\n\n", sep='')
 
-    if (copy_model_dot_R_tzar_file)  file.remove (full_model_dot_R_DEST_path)
-
     file.remove (emulation_scratch_file_path)
 
     clean_up_console_sink (echo_console_to_temp_file,
