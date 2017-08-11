@@ -17,7 +17,7 @@ project.yaml file}
 yaml file containing control values for tzar emulation}
 }
 \value{
-parameters list of parameters loaded from project.yaml file
+Returns nothing    #parameters list of parameters loaded from project.yaml file
 }
 \description{
 If you're building a package rather than writing freestanding
