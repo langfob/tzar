@@ -70,7 +70,7 @@
 ## find and execute to call user's application code from tzar (currently,
 ## it's always "model.R")
 #'
-#' @return parameters list of parameters loaded from project.yaml file
+#' @return Returns nothing    #parameters list of parameters loaded from project.yaml file
 #' @export
 #'
 #' @examples \dontrun{
@@ -106,8 +106,6 @@ run_tzar <- function (main_function,
 
     copy_model_dot_R_tzar_file  = as_boolean (tzar_em_params$copy_model_dot_R_tzar_file)
 
-#    tzar_em_scratch_dir         = tzar_em_params$emulation_scratch_dir
-#    emulation_scratch_file_path = tzar_em_params$emulation_scratch_file_path
     project_path                = tzar_em_params$project_path
     tzar_jar_name_with_path     = tzar_em_params$tzar_jar_name_with_path
     emulation_scratch_file_name_with_path = tzar_em_params$emulation_scratch_file_name_with_path
@@ -136,20 +134,6 @@ run_tzar <- function (main_function,
             normalizePath (emulation_scratch_file_name_with_path,
                            mustWork=FALSE)
 
-            #--------------------------------------------------------
-            #  If there is no model.R file in the source code area,
-            #  copy the template model.R file into the area.
-            #--------------------------------------------------------
-
-        if (copy_model_dot_R_tzar_file)
-            full_model_dot_R_DEST_path =
-                    copy_model_dot_R_tzar_file_to_src_area (
-                                        model_dot_R_tzar_SRC_dir,
-                                        model_dot_R_tzar_disguised_filename,
-                                        project_path,
-                                        required_model_dot_R_filename_for_tzar,
-                                        overwrite_existing_model_dot_R_DEST)
-
             #---------------------------------------------------------
             #  Often, a run will overflow the console buffer and
             #  important debugging output to the console output will
@@ -162,6 +146,30 @@ run_tzar <- function (main_function,
             console_sink_file_info =
                 open_sink_file (console_out_file_name_with_path)
         }
+
+        #-----------------------------------------------------------
+        #  If there is no model.R file in the source code area,
+        #  copy the template model.R file into the area.
+        #  This may happen both with and without emulation,
+        #  so be sure to keep this outside the "if(tzar_emulation)
+        #  test above.
+        #
+        #  Note however, this little bit of code does you no good
+        #  when running tzar at the command line instead of from
+        #  within this code.  In that case, if the model.R code
+        #  has been hidden by model.R.tzar, you'll need to copy
+        #  it to model.R yourself because the bit of code here
+        #  is never seen by command line tzar.
+        #-----------------------------------------------------------
+
+    if (copy_model_dot_R_tzar_file)
+        full_model_dot_R_DEST_path =
+                copy_model_dot_R_tzar_file_to_src_area (
+                                    model_dot_R_tzar_SRC_dir,
+                                    model_dot_R_tzar_disguised_filename,
+                                    project_path,
+                                    required_model_dot_R_filename_for_tzar,
+                                    overwrite_existing_model_dot_R_DEST)
 
     #--------------------------------------------------------------------
     #--------------------------------------------------------------------
@@ -202,7 +210,7 @@ run_tzar <- function (main_function,
                 #  Finally, ready to run the user's code and clean up.
                 #-------------------------------------------------------
 
-        main_function (parameters)
+        main_function (parameters, emulating_tzar)
 
         clean_up_after_tzar_emulation (parameters$tzar_in_progress_dir_name,
                                        parameters$tzar_emulation_completed_dir_name,
@@ -213,14 +221,24 @@ run_tzar <- function (main_function,
                                        console_sink_file_info,
                                        parameters$full_output_dir_with_slash)
 
-        cat ("\n\nIn run_tzar:  Finished running tzar WITH emulation...")
+        cat ("\n\nIn run_tzar:  Finished running tzar WITH emulation...\n")
 
         } else
         {
-        cat ("\n\nIn run_tzar:  Finished running tzar WITHOUT emulation...")
+        cat ("\n\nIn run_tzar:  Finished running tzar WITHOUT emulation...\n")
         }
 
-    return (invisible (parameters))
+        #----------------------------------------------------------------
+        #  Make sure that model.R is removed if you're running inside a
+        #  package Build.
+        #  This applies even if you're not doing emulation but still
+        #  calling tzar from this emulator code with the
+        #  emulating_tzar flag set to FALSE.
+        #  This has no effect however, if tzar is run from the command
+        #  line instead of through this code.
+        #----------------------------------------------------------------
+
+    if (copy_model_dot_R_tzar_file)  file.remove (full_model_dot_R_DEST_path)
     }
 
 #===============================================================================
