@@ -8,6 +8,8 @@
 #'
 #' @param parameters List of parameters controlling the current run (usually
 #'   decoded from project.yaml by tzar)
+#' @param emulating_tzar boolean flag indicating whether running under tzar
+#' emulation
 #'
 #' @return Returns nothing
 #' @export
@@ -16,14 +18,14 @@
 #' tzar_main (parameters)
 #'}
 
-tzar_main <- function (parameters)
+tzar_main <- function (parameters, emulating_tzar=FALSE)
     {
     cat ("\n\nIn tzar_main now.\n\n")
 
 #    cat ("\n    parameters = \n\n")
 #    print (parameters)
 
-    xu_paper_main (parameters)
+    my_main_code (parameters, emulating_tzar)
 
     cat ("\n\nAll done now...\n\n")
     }
@@ -48,8 +50,10 @@ tzar_main <- function (parameters)
 runt <- function ()
     {
     tzar::run_tzar (main_function = tzar_main,
-                    parameters_yaml_file_path = "./R/project.yaml",
-                    tzar_emulation_yaml_file_path = "./R/tzar_emulation.yaml")
+                    parameters_yaml_file_path = "./project.yaml",
+                    tzar_emulation_yaml_file_path = "./tzar_emulation.yaml")
     }
 
 #===============================================================================
+
+

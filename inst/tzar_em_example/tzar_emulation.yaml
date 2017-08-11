@@ -1,0 +1,21 @@
+    #-------------------------------------
+    #  Tzar emulation control parameters
+    #-------------------------------------
+
+        #  These might go away in the future if River adds emulation
+        #  directly inside of tzar with a "dry run" command.
+
+emulating_tzar:                         TRUE
+
+echo_console_to_temp_file:              TRUE
+console_out_file_name_with_path:        "./console_sink_output.tzar_em.txt"
+
+project_path:                           "."
+tzar_jar_name_with_path:                "~/D/rdv-framework-latest-work/tzar.jar"
+emulation_scratch_file_name_with_path:  "./tzar_em_scratch.yaml"
+
+copy_model_dot_R_tzar_file:             FALSE
+model_dot_R_tzar_SRC_dir:               "."
+model_dot_R_tzar_disguised_filename:    "model.R.tzar"
+required_model_dot_R_filename_for_tzar: "model.R"
+overwrite_existing_model_dot_R_DEST:    FALSE

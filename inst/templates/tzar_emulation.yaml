@@ -2,19 +2,43 @@
     #  Tzar emulation control parameters
     #-------------------------------------
 
-        #  These might go away in the future if River adds emulation
-        #  directly inside of tzar with a "dry run" command.
+emulating_tzar:                         TRUE
 
-    emulating_tzar:                         TRUE
-    echo_console_to_temp_file:              TRUE
+echo_console_to_temp_file:              TRUE
+console_out_file_name_with_path:        "./console_sink_output.tzar_em.txt"
 
-    project_path:                           "/Users/bill/D/Projects/ProblemDifficulty/pkgs/bdpgxupaper/R"
-    tzar_jar_path:                          "~/D/rdv-framework-latest-work/tzar.jar"
-    emulation_scratch_file_path:            "~/tzar/tzar_emulation_scratch_area/tzar_emulation_scratch.yaml"
+project_path:                           "."
+tzar_jar_name_with_path:                "[FULL PATH TO YOUR TZAR JAR]"      #  PATH TO YOUR COPY OF THE TZAR JAR, e.g., "~/apps/tzar.5.3.1.jar"
+emulation_scratch_file_name_with_path:  "./tzar_emulation_scratch.yaml"     #  e.g., "~/tzar/tzar_emulation_scratch_area/tzar_emulation_scratch.yaml"
 
-    copy_model_dot_R_tzar_file:             TRUE
-    model_dot_R_tzar_SRC_dir:               "/Users/bill/D/Projects/ProblemDifficulty/pkgs/bdpgxupaper/R"    #"."    #system.file("templates", package="bdpgxupaper")
-    model_dot_R_tzar_disguised_filename:    "model.R.tzar"
-    required_model_dot_R_filename_for_tzar: "model.R"
-    overwrite_existing_model_dot_R_DEST:    TRUE
+    #---------------------------------------------------------------------------
+    #  Controls for when you are running tzar emulations inside
+    #  a build process for building a package.
+    #
+    #  In that case, you can't have tzar's required "model.R" file in
+    #  the R directory because R's Build process will run it when it
+    #  runs all R files in the directory.
+    #  - If not emulating inside a Build process,
+    #      - set copy_model_dot_R_tzar_file to FALSE to indicate that model.R
+    #        is in the source directory and should be left alone.
+    #      - The 4 variables after that one are ignored when it is FALSE.
+    #  - If emulating inside a Build process,
+    #      - set copy_model_dot_R_tzar_file to TRUE to indicate that model.R
+    #        must be hidden under a different name during Builds and then
+    #        unhidden when running an emulation.
+    #      - The 4 variables after that must be set, though the default values
+    #        here in the template are usually fine, except for the overwrite
+    #        variable.  You will probably want to set it to TRUE so that you
+    #        don't have to manually delete a leftover model.R after a crash,
+    #        but the default here in the template is FALSE to make sure that
+    #        you don't accidentally overwrite a good model.R before you
+    #        understand what's going on.
+    #---------------------------------------------------------------------------
+
+copy_model_dot_R_tzar_file:             FALSE
+
+model_dot_R_tzar_SRC_dir:               "."
+model_dot_R_tzar_disguised_filename:    "model.R.tzar"
+required_model_dot_R_filename_for_tzar: "model.R"
+overwrite_existing_model_dot_R_DEST:    FALSE
 

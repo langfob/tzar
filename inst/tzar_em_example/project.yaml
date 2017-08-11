@@ -1,0 +1,7 @@
+project_name: tzar_em_example
+runner_class: RRunner
+
+base_params:
+    full_output_dir_with_slash: $$output_path$$
+    some_other_variable: 5
+
