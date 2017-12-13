@@ -72,14 +72,14 @@ clean_up_console_sink <-
               console_sink_file_info,
               full_output_dir_with_slash)
     {
-    cat ("\n\nIn clean_up_console_sink:\n")
+#    cat ("\n\nIn clean_up_console_sink:")
 
         #  If you were echoing console output to a temp file,
         #  stop echoing and close the temp file.
 
     if (echo_console_to_temp_file)
         {
-        cat ("\nClosing sink file.\n")
+        cat ("\n\nClosing and moving console output echo file to current run's metadata directory:")
 
         console_out_file_name_with_path = console_sink_file_info$console_out_file_name_with_path
         temp_console_out_file = console_sink_file_info$temp_console_out_file
@@ -88,7 +88,7 @@ clean_up_console_sink <-
 
         if (is.null (temp_console_out_file))
             {
-            cat ("    temp_console_out_file is NULL\n")
+            cat ("\n    temp_console_out_file is NULL")
 
             } else
             {
@@ -108,7 +108,8 @@ clean_up_console_sink <-
                               "metadata",
                               basename (console_out_file_name_with_path))
 
-            cat ("\ndestination for sink file move = '", dest, "'\n")
+#            cat ("\ndestination for sink file move = '", dest, "'\n")
+            cat ("\n'", dest, "'\n")
 
             file.rename (console_out_file_name_with_path, dest)
             }

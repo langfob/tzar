@@ -210,18 +210,34 @@ run_tzar <- function (main_function,
                 #  Finally, ready to run the user's code and clean up.
                 #-------------------------------------------------------
 
-        main_function (parameters, emulating_tzar)
+        tryCatch (
+            {
+            main_function (parameters, emulating_tzar)
 
-        clean_up_after_tzar_emulation (parameters$tzar_in_progress_dir_name,
-                                       parameters$tzar_emulation_completed_dir_name,
-                                       copy_model_dot_R_tzar_file,
-                                       full_model_dot_R_DEST_path,
-                                       emulation_scratch_file_name_with_path,
-                                       echo_console_to_temp_file,
-                                       console_sink_file_info,
-                                       parameters$full_output_dir_with_slash)
+            clean_up_after_tzar_emulation (parameters$tzar_in_progress_dir_name,
+                                           parameters$tzar_emulation_completed_dir_name,
+                                           copy_model_dot_R_tzar_file,
+                                           full_model_dot_R_DEST_path,
+                                           emulation_scratch_file_name_with_path,
+                                           echo_console_to_temp_file,
+                                           console_sink_file_info,
+                                           parameters$full_output_dir_with_slash)
 
-        cat ("\n\nIn run_tzar:  Finished running tzar WITH emulation...\n")
+            cat ("\n\nIn run_tzar:  Finished running tzar WITH emulation...\n")
+
+            },
+
+            error = function (err)
+                {
+                handle_error_clean_up_after_tzar_emulation_crash (
+                                            parameters$tzar_in_progress_dir_name,
+                                            emulation_scratch_file_name_with_path,
+                                            echo_console_to_temp_file,
+                                            console_sink_file_info,
+                                            parameters$full_output_dir_with_slash)
+                }
+            )
+
 
         } else
         {

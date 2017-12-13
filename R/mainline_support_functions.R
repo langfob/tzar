@@ -170,13 +170,64 @@ clean_up_after_tzar_emulation <- function (tzar_in_progress_dir_name,
     cat ("\n\nFinal tzar output is in:\n    '", tzar_emulation_completed_dir_name,
          "'\n\n", sep='')
 
-    file.remove (emulation_scratch_file_path)
+    if (file.exists (emulation_scratch_file_path))
+        {
+        file.remove (emulation_scratch_file_path)
+        }
 
     clean_up_console_sink (echo_console_to_temp_file,
                            console_sink_file_info,
                            full_output_dir_with_slash)
 
     file.rename (tzar_in_progress_dir_name, tzar_emulation_completed_dir_name)
+     }
+
+#===============================================================================
+
+handle_error_clean_up_after_tzar_emulation_crash <-
+                                        function (tzar_in_progress_dir_name,
+                                                  emulation_scratch_file_path,
+                                                  echo_console_to_temp_file,
+                                                  console_sink_file_info,
+                                                  full_output_dir_with_slash)
+    {
+        #----------------------------------------------------------------
+        #  Write to output to flag that the emulation run crashed.
+        #  Using message() to make it bright red and hard to miss in
+        #  console output.
+        #  However, that message doesn't seem to show up in the console
+        #  sink file, so write the same message out using cat too.
+        #----------------------------------------------------------------
+
+    cat ("\n**********  TZAR EMULATION RUN CRASHED  **********",
+         "\n**********       CLEANING UP NOW        **********\n")
+
+    message (paste0 ("\n**************************************************",
+                     "\n**********  TZAR EMULATION RUN CRASHED  **********",
+                     "\n**********       CLEANING UP NOW        **********",
+                     "\n**************************************************"))
+
+        #----------------------------------------------------------------
+        #  Remove the emulation scratch file and move the console sink
+        #  file to the metadata area of the current run that is being
+        #  aborted.
+        #----------------------------------------------------------------
+
+    cat ("\nCurrent tzar output area is:\n    '", tzar_in_progress_dir_name,
+         "'", sep='')
+
+    if (file.exists (emulation_scratch_file_path))
+        {
+        cat ("\nRemoving emulation scratch file = '", emulation_scratch_file_path, sep='')
+        file.remove (emulation_scratch_file_path)
+        }
+
+    if (echo_console_to_temp_file)
+        {
+        clean_up_console_sink (echo_console_to_temp_file,
+                               console_sink_file_info,
+                               full_output_dir_with_slash)
+        }
      }
 
 #===============================================================================
