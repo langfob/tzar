@@ -208,6 +208,14 @@ run_tzar <- function (main_function,
 
                 #-------------------------------------------------------
                 #  Finally, ready to run the user's code and clean up.
+                #
+                #  Wrap this in a tryCatch in case there is a fatal
+                #  error during the run.
+                #  If that happens, you want to be able to save the
+                #  console sink file and its important error-related
+                #  information and random seed related information.
+                #  This file is generally lost if there is no tryCatch
+                #  call.
                 #-------------------------------------------------------
 
         tryCatch (
