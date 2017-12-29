@@ -56,11 +56,19 @@ as_boolean <- function (value)
 set_tzar_output_dir_in_scratch_file <- function (full_output_dir_with_slash,
                                                  emulation_scratch_file_path)
     {
+        #----------------------------------------------------------------
         #  Make sure the directory exists for writing the scratch file.
-        #  If it doesn't, then create that directory and any above it in the
-        #  path that don't exist.
+        #  If it doesn't, then create that directory and any above it
+        #  in the path that don't exist.
+        #----------------------------------------------------------------
+
     dir = dirname (emulation_scratch_file_path)
     if (! dir.exists (dir))  dir.create (dir, recursive=TRUE)
+
+        #-----------------------------------------------------------------
+        #  Open or create the file and write the path to the tzar output
+        #  directory in the file and close the file.
+        #-----------------------------------------------------------------
 
     scratch_file = file (emulation_scratch_file_path, "w")
     cat ("full_output_dir_with_slash: ", full_output_dir_with_slash, "\n", file=scratch_file, sep='')
